@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import axios from 'axios';
+
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -22,23 +24,18 @@ import Looks3Icon from '@mui/icons-material/Looks3';
 import Looks4Icon from '@mui/icons-material/Looks4';
 import Looks5Icon from '@mui/icons-material/Looks5';
 import { TextField, Box, Badge, Divider } from '@mui/material';
-import { red } from '@mui/material/colors';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import { visuallyHidden } from '@mui/utils';
 import { styled } from '@mui/material/styles';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   margin: theme.spacing(2),
 }));
-const icons = [
-  <LooksOneIcon color='success' />,
-  <LooksTwoIcon sx={{ color: red[500] }} />,
-  <Looks3Icon color='success' />,
-  <Looks4Icon sx={{ color: red[500] }} />,
-  <Looks5Icon color='success' />,
-];
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -71,7 +68,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -82,50 +78,28 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const createData = (id, name, phone, email, address, gameStat, date) => {
+const createData = ( id, option, appointmentdate, phone, firstname, lastname, birthday, personid, email, city, street, housenum, code, gamestatus, paystatus) => {
   return {
     id,
-    name,
+    option,
+    appointmentdate,
     phone,
+    firstname,
+    lastname,
+    birthday,
+    personid,
     email,
-    address,
-    gameStat,
-    date
+    city,
+    street,
+    housenum,
+    code,
+    gamestatus,
+    paystatus
   };
 }
 
 const rows = [
-  createData(1, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(2, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(3, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(4, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(5, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(6, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(7, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(8, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(9, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(10, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(11, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(12, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(13, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(14, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(15, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(16, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(17, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(18, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(19, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(20, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(21, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(22, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(23, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(24, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(25, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(26, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(27, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(28, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(29, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-  createData(30, 'wolf', '888888888', 'abc@gmail.com', 'Berlin', 12345, '1993.07.07'),
-
+  createData(1, 1, '2024-09-15', '13393686969', 'John', 'Doe', '2000-09-15', '51802227575', 'greenboy0705@proton.me', 'Krakow', 'Zundertseweg', '25', '30-318', '0.0.0.0.0.0.0.0.0.0', '0')
 ];
 
 const descendingComparator = (a, b, orderBy) => {
@@ -162,40 +136,88 @@ const stableSort = (array, comparator) => {
 
 const headCells = [
   {    
-    id: 'name',
+    id: 'option',
     numeric: true,
     disablePadding: false,
-    label: 'Name',
+    label: 'Option',
   },
-  { 
+  {    
+    id: 'appointmentdate',
+    numeric: true,
+    disablePadding: false,
+    label: 'appointmentdate',
+  },
+  {    
     id: 'phone',
     numeric: true,
     disablePadding: false,
-    label: 'Phone',
+    label: 'phone',
   },
-  {
+  {    
+    id: 'firstname',
+    numeric: true,
+    disablePadding: false,
+    label: 'firstname',
+  },
+  {    
+    id: 'lastname',
+    numeric: true,
+    disablePadding: false,
+    label: 'lastname',
+  },
+  {    
+    id: 'birthday',
+    numeric: true,
+    disablePadding: false,
+    label: 'birthday',
+  },
+  {    
+    id: 'personid',
+    numeric: true,
+    disablePadding: false,
+    label: 'personid',
+  },
+  {    
     id: 'email',
     numeric: true,
     disablePadding: false,
-    label: 'Email',
+    label: 'email',
   },
-  {
-    id: 'address',
+  {    
+    id: 'city',
     numeric: true,
     disablePadding: false,
-    label: 'Address',
+    label: 'city',
   },
-  {
-    id: 'gameStat',
+  {    
+    id: 'street',
     numeric: true,
     disablePadding: false,
-    label: 'Game Status',
+    label: 'street',
   },
-  {
-    id: 'date',
+  {    
+    id: 'housenum',
     numeric: true,
     disablePadding: false,
-    label: 'Appointment Date',
+    label: 'housenum',
+  },
+  {    
+    id: 'code',
+    numeric: true,
+    disablePadding: false,
+    label: 'code',
+  },
+  {    
+    id: 'gamestatus',
+    numeric: true,
+    disablePadding: false,
+    label: 'gamestatus',
+  },
+  {    
+    id: 'paystatus',
+    numeric: true,
+    disablePadding: false,
+    label: 'paystatus',
   },
 
 ];
@@ -226,20 +248,20 @@ const EnhancedTableHead = (props) => {
             key={headCell.id}
             align='center'
             padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
+            // sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
+            {/* <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
-            >
+            > */}
               {headCell.label}
-              {orderBy === headCell.id ? (
+              {/* {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </Box>
               ) : null}
-            </TableSortLabel>
+            </TableSortLabel> */}
           </StyledTableCell>
         ))}
       </StyledTableRow>
@@ -318,12 +340,85 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const EnhancedTable = () => {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('calories');
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [adminData, setAdminData] = useState([]);
+  const [userData, setUserData] = useState([]);
+  const [adminDate, setAdminDate] = useState('');
+  const [adminPhone, setAdminPhone] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+
+
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const user_info = await axios.get('http://localhost:3000/user/get_user_info');
+        if(user_info.status === 200){
+          setUserData(user_info.data.data);
+        }else{
+          alert("Error!");
+        }
+        const admin_info = await axios.get('http://localhost:3000/admin/get_admin_info');
+        if(admin_info.status === 200){
+          setAdminData(admin_info.data.data[0]);
+        }else{
+          alert("Error!");
+        }
+      } catch (err) {
+        console.log(err);
+      }  
+    }
+    fetchData();
+  }, []);
+  
+  const changeDate = async() => {
+    try {
+      const response = await axios.post('http://localhost:3000/admin/change_date', {  
+        adminDate
+      });
+      if(response.status === 200){
+        alert("Your Appointment Date has been successfully changed.!");
+      }else{
+        alert("Error!");
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const changePhone = async() => {
+    try {
+      const response = await axios.post('http://localhost:3000/admin/change_phone', {  
+        adminPhone
+      });
+      if(response.status === 200){
+        alert("Your Phone Number has been successfully changed.!");
+      }else{
+        alert("Error!");
+      }
+    } catch (err) {
+      alert(err);
+    }    
+  }
+
+  const changePassword = async() => {
+    try {
+      const response = await axios.post('http://localhost:3000/admin/change_password', {  
+        adminPassword
+      });
+      if(response.status === 200){
+        alert("Your password has been successfully changed.!");
+      }else{
+        alert("Error!");
+      }
+    } catch (err) {
+      alert(err);
+    }
+  }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -333,7 +428,7 @@ const EnhancedTable = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = userData.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -342,7 +437,6 @@ const EnhancedTable = () => {
 
   const handleClick = (event, id) => {
 
-    const numbers = [1, 2, 3, 4, 5];
 
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -379,15 +473,15 @@ const EnhancedTable = () => {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userData.length) : 0;
 
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(userData, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
-    [order, orderBy, page, rowsPerPage],
+    [order, orderBy, page, rowsPerPage, userData],
   );
 
   return (
@@ -395,7 +489,7 @@ const EnhancedTable = () => {
       <Box sx={{ flexGrow: 1, margin: '30px 15px 15px 15px'}}>
       <Paper sx={{padding: '15px 15px 15px 15px'}}>
         <Typography component="h1" variant="h5" align='left' marginBottom={'5px'}>
-          Set Admin Information
+          Set Up Admin Information
         </Typography>
         <Divider sx={{marginBottom: '25px'}}></Divider>
         <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -404,20 +498,22 @@ const EnhancedTable = () => {
               <TextField
                 variant="outlined"
                 margin="normal"
-                required
+                label={adminData.date?adminData.date.slice(0,10):''}
                 fullWidth
                 name="date"
-                type="date"
+                defaultValue={adminData.date?adminData.date.slice(0,10):''}
                 id="date"
                 autoComplete="date"
+                onChange={(e) => {setAdminDate(e.target.value);}}
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
+                onClick={() => {changeDate();}}
               >
-                Add
+                Set
               </Button>
             </Item>
           </Grid>
@@ -426,19 +522,21 @@ const EnhancedTable = () => {
             <TextField
                 variant="outlined"
                 margin="normal"
-                required
                 fullWidth
                 name="phone"
-                label="Phone"
+                label={adminData.phone}
+                defaultValue={adminData.phone}
                 type="number"
                 id="phone"
                 autoComplete="phone"
+                onChange={(e) => {setAdminPhone(e.target.value);}}
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
+                onClick={() => {changePhone();}}
               >
                 Set
               </Button>
@@ -456,12 +554,14 @@ const EnhancedTable = () => {
                 type="password"
                 id="password"
                 autoComplete="password"
+                onChange={(e) => {setAdminPassword(e.target.value);}}
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
+                onClick={() => {changePassword();}}
               >
                 Set
               </Button>
@@ -485,21 +585,21 @@ const EnhancedTable = () => {
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={rows.length}
+                rowCount={userData.length}
               />
               <TableBody>
-                {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
+                { 
+                visibleRows.map((row, index) => {
+                  const isItemSelected = isSelected(row.user_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <StyledTableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
+                      onClick={(event) => handleClick(event, row.user_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.id}
+                      key={row.user_id}
                       selected={isItemSelected}
                       sx={{ cursor: 'pointer' }}
                     >
@@ -518,23 +618,41 @@ const EnhancedTable = () => {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {row.option}
                       </StyledTableCell>
 
+                      <StyledTableCell align="left">{row.appointmentdate}</StyledTableCell>
                       <StyledTableCell align="center">{row.phone}</StyledTableCell>
+                      <StyledTableCell align="left">{row.firstname}</StyledTableCell>
+                      <StyledTableCell align="left">{row.lastname}</StyledTableCell>
+                      <StyledTableCell align="center">{row.birthday}</StyledTableCell>
+                      <StyledTableCell align="center">{row.personid}</StyledTableCell>
                       <StyledTableCell align="center">{row.email}</StyledTableCell>
-                      <StyledTableCell align="center">{row.address}</StyledTableCell>
-
+                      <StyledTableCell align="center">{row.city}</StyledTableCell>
+                      <StyledTableCell align="center">{row.street}</StyledTableCell>
+                      <StyledTableCell align="center">{row.housenum}</StyledTableCell>
+                      <StyledTableCell align="center">{row.code}</StyledTableCell>
                       <StyledTableCell align="center">
                         <Box display="flex" justifyContent="center">
-                          {icons.map((icon, index) => (
-                            <StyledBadge key={index} badgeContent={index + 1} color="primary">
-                              {icon}
+                        
+                            <StyledBadge badgeContent={row.gamestatus.split('.')[1]} color="primary">
+                              <LooksOneIcon color={row.gamestatus.split('.')[0][0] === '0'? 'fail':'success'} />
                             </StyledBadge>
-                          ))}
+                            <StyledBadge badgeContent={row.gamestatus.split('.')[2]} color="primary">
+                              <LooksTwoIcon color={row.gamestatus.split('.')[0][1] === '0'? 'fail':'success'} />
+                            </StyledBadge>
+                            <StyledBadge badgeContent={row.gamestatus.split('.')[3]} color="primary">
+                              <Looks3Icon color={row.gamestatus.split('.')[0][2] === '0'? 'fail':'success'} />
+                            </StyledBadge>
+                            <StyledBadge badgeContent={row.gamestatus.split('.')[4]} color="primary">
+                              <Looks4Icon color={row.gamestatus.split('.')[0][3] === '0'? 'fail':'success'} />
+                            </StyledBadge>
+                            <StyledBadge badgeContent={row.gamestatus.split('.')[5]} color="primary">
+                              <Looks5Icon color={row.gamestatus.split('.')[0][4] === '0'? 'fail':'success'} />
+                            </StyledBadge>
                         </Box>
                       </StyledTableCell>
-                      <StyledTableCell align="center">{row.date}</StyledTableCell>
+                      <StyledTableCell align="center">{row.paystatus === '1'? 'Paid': 'Not Paid'}</StyledTableCell>
 
                     </StyledTableRow>
 
@@ -555,7 +673,7 @@ const EnhancedTable = () => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={rows.length}
+            count={userData.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

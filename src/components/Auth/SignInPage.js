@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import axios from 'axios';
 import { TextField, 
   Button, 
   Box, 
   Typography, 
-  RadioGroup,
-  FormLabel,
-  FormControl,
-  FormControlLabel,
-  Radio,
   Container,
   CssBaseline
 
@@ -50,26 +44,27 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const SignInPage = () => {
-  let navigate = useNavigate();
-
   const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const formData = {
       password: data.get('password'),
     };
-    if(formData.password === 'admin123'){
-      navigate('/admin_page');     
+    try {
+      const response = await axios.post('http://localhost:3000/admin/login', {  
+        formData
+      });
+      if(response.status === 200){
+        localStorage.setItem('authUser', '12345'); // Store the token
+        localStorage.setItem('authToken', '12345'); // Store the token
+        window.location.href = '/admin_page'; // Redirect on successful login
+      }else{
+        window.location.href = '/oops';
+      }
+    } catch (err) {
+      window.location.href = '/oops';
+      console.log(err);
     }
-    // try {
-    //   const response = await axios.post('http://localhost:3000/login', {
-    //     formData
-    //   });
-    //   console.log(response.data);
-    //   // localStorage.setItem('token', response.data.token);
-    // } catch (err) {
-    //   console.log("error");
-    // }
   };
 
   return (

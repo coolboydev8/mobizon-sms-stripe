@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, 
   Button, 
   Box, 
   Typography, 
   RadioGroup,
-  FormLabel,
-  FormControl,
   FormControlLabel,
   Radio,
   Container,
   CssBaseline
-
 } from '@mui/material';
 import { styled } from '@mui/system';
-
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -49,27 +44,23 @@ const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(3, 0, 2),
 }));
 
-const UserInfoRegPage = () => {
-  let navigate = useNavigate();
-
+const FirstPage = () => {
 
   const handleSubmit = async(event) => {
-    navigate('/paystripe'); 
-        // event.preventDefault();
-    // const data = new FormData(event.currentTarget);
-    // const formData = {
-    //   email: data.get('date'),
-    //   password: data.get('phone'),
-    // };
-    // try {
-    //   const response = await axios.post('http://localhost:3000/login', {
-    //     formData
-    //   });
-    //   console.log(response.data);
-    //   // localStorage.setItem('token', response.data.token);
-    // } catch (err) {
-    //   console.log("error");
-    // }
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const formData = {
+      option: data.get('option'),
+      date: data.get('date'),
+      phone: data.get('phone'),
+    };
+    try {
+      await axios.post('http://localhost:3000/register_phone', {
+        formData
+      });
+    } catch (err) {
+      console.log("error");
+    }
   };
 
   return (
@@ -77,50 +68,40 @@ const UserInfoRegPage = () => {
       <CssBaseline />
       <StyledBox>
         <Typography component="h1" variant="h5">
-          Register Your Information
+          Welcome
         </Typography>
         <StyledForm onSubmit={handleSubmit}>
+          <RadioGroup
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            name="option"
+            defaultValue="1"
+            id="option"
+          >
+            <FormControlLabel value="1" control={<Radio />} label="Option 1" />
+            <FormControlLabel sx={{visibility: 'hidden'}} control={<Radio />} label="Option 2" />
+            <FormControlLabel value="2" control={<Radio />} label="Option 2" />
+          </RadioGroup>
           <TextField
             variant="outlined"
             margin="normal"
-            required
             fullWidth
-            id="name"
-            label="Name"
-            name="name"
-            autoComplete="name"
-            autoFocus
+            inputProps={{ readOnly: true }}
+            name="date"
+            label="2024-09-15"
+            defaultValue="2024-09-15"  
+            id="date"
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            name="address"
-            label="Address"
-            id="address"
-            autoComplete="address"
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="personID"
-            label="Personal ID"
-            id="personID"
-            autoComplete="personID"
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="email"
-            label="Email"
-            type='email'
-            id="email"
-            autoComplete="email"
+            name="phone"
+            label="Phone Number"
+            type="number"
+            id="phone"
+            autoComplete="current-phone"
           />
           <StyledButton
             type="submit"
@@ -136,4 +117,4 @@ const UserInfoRegPage = () => {
   );
 };
 
-export default UserInfoRegPage;
+export default FirstPage;

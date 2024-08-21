@@ -40,15 +40,22 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 const StripePage = () => {
+  const phone = localStorage.getItem('phone');
+  const option = localStorage.getItem('option');
+
   const handleCheckout = async () => {
     const stripe = await stripePromise;
-    const response = await fetch('http://localhost:3000/create-checkout-session', {
+    const response = await fetch('http://localhost:3000/stripe/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({ phone, option }),
     });
-
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
     const session = await response.json();
 
     const result = await stripe.redirectToCheckout({

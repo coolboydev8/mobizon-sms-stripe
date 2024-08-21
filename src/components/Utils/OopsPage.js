@@ -36,7 +36,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const OopsPage = () => {
   return (
-    <StyledContainer component="main">
+    <StyledContainer component="main" maxWidth='disable'>
       <CssBaseline />
       <StyledBox>
         <StyledIcon />
