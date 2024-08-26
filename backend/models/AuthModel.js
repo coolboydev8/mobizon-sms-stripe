@@ -35,6 +35,29 @@ exports.updatePhone = async(newPhone) => {
     if (conn) conn.end();
   }
 }
+exports.updateEmail = async(newEmail) => {
+  let conn;
+  try {
+    conn = await dbGetConnection();
+    await conn.query('UPDATE admin SET email = ? WHERE id = 1', [newEmail]);
+    conn.end();
+  } catch(err) {
+    console.log(err);
+    if (conn) conn.end();
+  }
+}
+exports.updatePrice = async(newPrice) => {
+  let conn;
+  try {
+    conn = await dbGetConnection();
+    await conn.query('UPDATE admin SET price = ? WHERE id = 1', [newPrice]);
+    conn.end();
+  } catch(err) {
+    console.log(err);
+    if (conn) conn.end();
+  }
+}
+
 exports.updatePassword = async(newPassword) => {
   const hash = await bcrypt.hash(newPassword, 10);
   let conn;
@@ -60,3 +83,16 @@ exports.getAdminInfo = async() => {
     if (conn) conn.end();
   }
 }
+exports.getAppointmentDate = async() => {
+  let conn;
+  try {
+    conn = await dbGetConnection();
+    const result = await conn.query('SELECT * FROM admin');
+    conn.end();
+    return result[0].date;
+  } catch(err) {
+    console.log(err);
+    if (conn) conn.end();
+  }
+}
+

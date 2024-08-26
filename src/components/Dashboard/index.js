@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
+
 import { TextField, 
   Button, 
   Box, 
@@ -11,6 +12,11 @@ import { TextField,
   CssBaseline
 } from '@mui/material';
 import { styled } from '@mui/system';
+
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -45,7 +51,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const FirstPage = () => {
-
   const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -55,9 +60,12 @@ const FirstPage = () => {
       phone: data.get('phone'),
     };
     try {
-      await axios.post('http://localhost:3000/register_phone', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/register_phone`, {
         formData
       });
+      if(response.status === 203){
+        alert(response.data.data);
+      }
     } catch (err) {
       console.log("error");
     }
@@ -79,26 +87,27 @@ const FirstPage = () => {
             id="option"
           >
             <FormControlLabel value="1" control={<Radio />} label="Option 1" />
-            <FormControlLabel sx={{visibility: 'hidden'}} control={<Radio />} label="Option 2" />
+            <FormControlLabel sx={{visibility: 'hidden'}} control={<Radio />} />
             <FormControlLabel value="2" control={<Radio />} label="Option 2" />
           </RadioGroup>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            inputProps={{ readOnly: true }}
-            name="date"
-            label="2024-09-15"
-            defaultValue="2024-09-15"  
-            id="date"
-          />
+          <LocalizationProvider required dateAdapter={AdapterDayjs} >
+            <DemoContainer required components={['DateTimePicker']} sx={{marginBottom: '8px', marginTop:'8px'}}>
+              <DateTimePicker
+                required
+                id='date'
+                name='date'
+                label='Appointment Date' 
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
             name="phone"
-            label="Phone Number"
+            label="12345678901"
             type="number"
             id="phone"
             autoComplete="current-phone"

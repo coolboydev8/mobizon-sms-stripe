@@ -1,10 +1,19 @@
 const bcrypt = require('bcrypt');
-const { getPasswordHash, getAdminInfo, updateDate, updatePhone, updatePassword } = require('../models/AuthModel');
+const { getPasswordHash, getAdminInfo, getAppointmentDate, updateDate, updatePhone, updatePassword, updateEmail, updatePrice } = require('../models/AuthModel');
 
 exports.get_admin_info = async(req, res) => {
   try{
     const admin_info = await getAdminInfo();
     res.status(200).json({ data: admin_info });
+  }catch(err){
+    console.log(err);
+  }
+}
+
+exports.get_appointment_date = async(req, res) => {
+  try{
+    const date = await getAppointmentDate();
+    res.status(200).json({ data: date });
   }catch(err){
     console.log(err);
   }
@@ -43,6 +52,22 @@ exports.changePhone = async(req, res) =>{
 exports.changePassword = async(req, res) =>{
   try{
     await updatePassword(req.body.adminPassword);
+    res.status(200).json({ data: 200 });
+  }catch(err){
+    console.log(err);
+  }
+}
+exports.changeEmail = async(req, res) =>{
+  try{
+    await updateEmail(req.body.adminEmail);
+    res.status(200).json({ data: 200 });
+  }catch(err){
+    console.log(err);
+  }
+}
+exports.changePrice = async(req, res) =>{
+  try{
+    await updatePrice(req.body.adminPrice);
     res.status(200).json({ data: 200 });
   }catch(err){
     console.log(err);

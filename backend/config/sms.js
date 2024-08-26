@@ -13,31 +13,31 @@ const send_verify_sms = async(recipient, message) => {
     let shortUrl, sendMsg;
     try {
 ////short link
-        const params = {
-            apiKey: API_KEY,
-            data: {
-                fullLink: message,
-                status: 1,
-                expirationDate: '',
-                comment: 'Shortened link.',
-            }
-        }
+        // const params = {
+        //     apiKey: API_KEY,
+        //     data: {
+        //         fullLink: message,
+        //         status: 1,
+        //         expirationDate: '',
+        //         comment: 'Shortened link.',
+        //     }
+        // }
         
-        const shortenResponse = await axios.post(MOBIZON_Create_ShortLink, null, { params });
+        // const shortenResponse = await axios.post(MOBIZON_Create_ShortLink, null, { params });
         
-        if (shortenResponse.data.code !== 0) {
-            throw new Error(`Error shortening URL: ${shortenResponse.data.message}`);
-        }
+        // if (shortenResponse.data.code !== 0) {
+        //     throw new Error(`Error shortening URL: ${shortenResponse.data.message}`);
+        // }
 
-        shortUrl = shortenResponse.data.data. shortLink;
-        sendMsg = `Here is your link:\n ${shortUrl}`;
+        // shortUrl = shortenResponse.data.data.shortLink;
+        // sendMsg = `Here is your link:\n ${shortUrl}`;
     
 //Send Msg
         const response = await axios.post(MOBIZON_API_SendMessage, null, {
             params: {
                 apiKey: API_KEY,
                 recipient: recipient,
-                text: sendMsg
+                text: message
             }
         });
 
@@ -51,14 +51,13 @@ const send_verify_sms = async(recipient, message) => {
     }
 }
 
-const send_check_option = async(recipient) => {
-    let sendMsg = 'Your reservation has been confirmed.';
+const send_check_option = async(phone, msg) => {
     try {
         const response = await axios.post(MOBIZON_API_SendMessage, null, {
             params: {
                 apiKey: API_KEY,
-                recipient: recipient,
-                text: sendMsg
+                recipient: phone,
+                text: msg
             }
         });
         if (response.data.code === 0) {

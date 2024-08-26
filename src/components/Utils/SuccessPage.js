@@ -41,7 +41,7 @@ const SuccessPage = () => {
       <StyledBox>
         <StyledIcon />
         <Typography component="h1" variant="h5">
-          Success!
+          Success.
         </Typography>
         <Typography variant="body1" align="center">
           Your operation was completed successfully.

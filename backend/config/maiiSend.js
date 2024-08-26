@@ -1,36 +1,25 @@
 const nodemailer = require('nodemailer');
 
-exports.send_mail = () => {
-
-    // Create a transporter object using SMTP transport
-    let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: false, // true for 465, false for 587
-        auth: {
-            user: 'goldenhouse0601@gmail.com', // your email
-            pass: 'google_key', // your email password (consider using environment variables for security)
-        }
-    });
-
-    // Set up email data
-    let mailOptions = {
-    from: 'goldenhouse0601@gmail.com', // sender address
-    to: 'goldenhouse0601@gmail.com', // list of receivers
-    subject: 'Hello ✔', // Subject line
-    text: 'Hello world?', // plain text body
-    html: '<b>Hello world?</b>', // html body
-    };
-
-    // Send mail with defined transport object
-    transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-        return console.log(error);
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT, 10),
+    secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
     }
-    console.log('Message sent: %s', info.messageId);
-    // Preview only available when sending through an Ethereal account
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+});
+
+const sendEmail = (mailOptions) => {
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(info);
+      }
     });
+  });
+};
 
-}
-
+module.exports = sendEmail;

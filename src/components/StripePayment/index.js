@@ -1,5 +1,7 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
+import axios from 'axios';
 
 import {
   Button, 
@@ -40,26 +42,26 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 const StripePage = () => {
-  const phone = localStorage.getItem('phone');
-  const option = localStorage.getItem('option');
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const phone = queryParams.get('phone');
+  const option = queryParams.get('option');
+  const date = queryParams.get('date');
+  if(phone){
+    localStorage.setItem('authUser', '12345'); // Store the token
+    localStorage.setItem('phone', phone);
+    localStorage.setItem('option', option);
+    localStorage.setItem('date', date);
+  }
   const handleCheckout = async () => {
     const stripe = await stripePromise;
-    const response = await fetch('http://localhost:3000/stripe/create-checkout-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ phone, option }),
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/stripe/create-checkout-session`);
+    console.log(response)
+    const { id } = response.data;
     
-    const session = await response.json();
-
     const result = await stripe.redirectToCheckout({
-      sessionId: session.id,
+      sessionId: id,
     });
 
     if (result.error) {

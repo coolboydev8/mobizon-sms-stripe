@@ -2,35 +2,32 @@ import React, { useEffect } from 'react';
 import {CardItem, CardItem4} from '../CardItem';
 
 const Gameresult = ({ step, direct, dirStatTop, dirStatBottom}) => {
-  useEffect(() => {
-    console.log(direct);
-  }, [])
   return (
     <div>
       {(step === 2 || step == 10) &&(
         <div className="res-grid-container">
-        <div className="grid-item button">
+        <div className="grid-item button-explanation">
           <img src='btn/down.png' width={24} height={24}></img>
         </div>
-        <div className="grid-item button">
+        <div className="grid-item button-explanation">
           <img src='btn/down.png' width={24} height={24}></img>
         </div>
-        <div className="grid-item button">
+        <div className="grid-item button-explanation">
           <img src='btn/down.png' width={24} height={24}></img>
         </div>
-        <div className="grid-item button">
+        <div className="grid-item button-explanation">
           <img src='btn/down.png' width={24} height={24}></img>
         </div>
-        <div className="grid-item button">
+        <div className="grid-item button-explanation">
           <img src='btn/down.png' width={24} height={24}></img>
         </div>
         {direct.map((item, index) => (
           item === 'down'? (
-            <div key={index} className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
               <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
             </div>          
           ):(
-            <div key={index} className="grid-item button" style={{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
             <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
           </div>          
           )

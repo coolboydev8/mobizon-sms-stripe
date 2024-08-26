@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 
 import Gameresult from './Gameresult';
 
 const FirstTest = ({ step, onNext, onPrevious }) => {
+  const navigate = useNavigate();
+
   const [imageVisible, setImageVisible] = useState(false);
   const [reactionTimeStatus, setReactionTimeStatus] = useState(false);
   const [directionData, setDirectionData] = useState([]);
@@ -11,6 +15,10 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
   const [testCount, setTestCount] = useState(0);
   const startTimeRef = useRef(null);
   const phone = localStorage.getItem('phone');
+  const option = localStorage.getItem('option');
+  const date = localStorage.getItem('date');
+  const payload_step = step / 2;
+
   useEffect(() => {
     let interval;
     if (testCount < 6) {
@@ -43,33 +51,49 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
   };
 
   const handleOk = async() => {
-    onNext();
+    if(step !== 10){
+      onNext();
+    }
     let report = 'success';
-    let step = 1;
     const payload = {
       phone,
       report,
-      step
+      payload_step
+    }
+    const payload_confirm = {
+      phone,
+      option,
+      date
     }
     try {
-      await axios.post('http://localhost:3000/user/update_game_status', {
+      await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
         payload
       });
     } catch (err) {
       console.log("error");
     }
+    if(step === 10){
+      try {
+        await axios.post(`${process.env.REACT_APP_API_URL}/user/confirm_appointment`, {
+          payload_confirm
+        });
+        navigate('/success');
+      } catch (err) {
+        navigate('/oops');
+        console.log("error");
+      }  
+    }
   }
   const handleRetry = async() => {
     onPrevious();    
     let report = 'retry';
-    let step = 1;
     const payload = {
       phone,
       report,
-      step
+      payload_step
     }
     try {
-      await axios.post('http://localhost:3000/user/update_game_status', {
+      await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
         payload
       });
     } catch (err) {
@@ -77,38 +101,56 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
     }
   }
   const handleIgnore = async() => {
-    onNext();
+    if(step !== 10){
+      onNext();
+    }
     let report = 'ignore';
-    let step = 1;
     const payload = {
       phone,
       report,
-      step
+      payload_step
+    }
+    const payload_confirm = {
+      phone,
+      option,
+      date
     }
     try {
-      await axios.post('http://localhost:3000/user/update_game_status', {
+      await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
         payload
       });
     } catch (err) {
-      console.log("error");
+        console.log("error");
     }    
+    if(step === 10){
+      try {
+        await axios.post(`${process.env.REACT_APP_API_URL}/user/confirm_appointment`, {
+          payload_confirm
+        });
+        navigate('/success');
+      } catch (err) {
+        navigate('/oops');
+        console.log("error");
+      }  
+    }
+
   }
 
   return (
-    <div style={{width: '100vw', height: '100vh', backgroundColor:'rgb(100 192 255 / 40%)'}}>
+    <div>
       {testCount === 6 &&(
-        <div style={{height:'100vh'}}>
+        <div style={{height:'100vh' }}>
           {directionData.length === 5 && (
             <Gameresult  step={step} direct={directionData} />
           )}
           {reactionTimeStatus === true && (
-              <p style={{marginTop: 0}}>Failed! The reaction Time is long!</p>
+              <p className='p-game-result'>Failed! The reaction Time is long!</p>
           )}
           {directionStauts === true && (
-              <p style={{marginTop: 0}}>Failed! Wrong Clicked!</p>
+              <p className='p-game-result'>Failed! Wrong Clicked!</p>
           )}
           {directionData.length !== 5 && (
-              <p style={{marginTop: 0}}>Failed! Not Clicked Everytimes!</p>
+              <p className='p-game-result'>Failed! Didn't always click!</p>
           )}
           {(reactionTimeStatus === true || directionStauts === true || directionData.length !== 5) && (
             <div style={{display: 'flex', gap: 10, justifyContent: 'center', alignItems:'center'}}>
@@ -118,10 +160,10 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
           )}          
           {reactionTimeStatus === false && directionStauts === false && directionData.length === 5 && (
             <div>
-              <p>Good!</p>
-              {step !== 10&& (
-                <button style={{width: '100px', height: '35px', visibility: 'true', cursor: 'pointer'}} onClick={() => handleOk()}>Next</button>
-              )}
+              <p  className='p-game-result'>Good!</p>
+              <div style={{display: 'flex', gap: 10, justifyContent: 'center', alignItems:'center'}}>          
+                <button className='btn-bottom-next button' style={{width: '100px', height: '35px', visibility: 'true', cursor: 'pointer'}} onClick={() => handleOk()}>Next</button>
+              </div>
               </div>
           )}
         </div>
@@ -129,7 +171,7 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
       {testCount !== 6 &&(
         <div className="container">
         <div className="test-leftPane">
-            {imageVisible &&<div className="button-explanation" style={{width: '15%'}}>
+            {imageVisible &&<div className="button-explanation">
             <img src='btn/down.png'width={70} height={70} /></div>}
           
         </div>

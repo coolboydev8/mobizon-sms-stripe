@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, 
@@ -10,12 +10,7 @@ import { TextField,
 
 } from '@mui/material';
 
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-
 import { styled } from '@mui/system';
-
-
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -57,13 +52,14 @@ const UserInfoRegPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const phone = queryParams.get('phone');
   const option = queryParams.get('option');
+  const date = queryParams.get('date');
 
   const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const formData = {
       info: {
-        fisrtname: data.get('firstName'),
+        firstname: data.get('firstName'),
         lastname: data.get('lastName'),
         birthday: data.get('birthday'),
         personid: data.get('personId'),
@@ -76,7 +72,7 @@ const UserInfoRegPage = () => {
       phone: phone
     };
     try {
-      const response = await axios.post('http://localhost:3000/user/update_info', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/update_info`, {
         formData
       });
       if(response.data.data === 200){
@@ -84,6 +80,7 @@ const UserInfoRegPage = () => {
         localStorage.setItem('authUser', '12345'); // Store the token
         localStorage.setItem('phone', phone);
         localStorage.setItem('option', option);
+        localStorage.setItem('date', date);
         navigate("/pay_stripe")
       }
     } catch (err) {
@@ -109,11 +106,10 @@ const UserInfoRegPage = () => {
               id="firstName"
               label="First Name"
               name="firstName"
-              autoComplete="firstName"
               inputProps={{
                 style: { height: 15  } 
               }}
-              autoFocus
+              autoComplete="firstName"
             />
             <TextField
               variant="outlined"

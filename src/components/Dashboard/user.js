@@ -1,15 +1,15 @@
 import React from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 import { TextField, 
   Button, 
   Box, 
   Typography, 
   Container,
   CssBaseline
-
 } from '@mui/material';
 import { styled } from '@mui/system';
-
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -43,27 +43,43 @@ const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(3, 0, 2),
 }));
 
-const SignInPage = () => {
+const UserPage = () => {
+  const navigate = useNavigate();
+
   const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const formData = {
-      password: data.get('password'),
+      phone: data.get('phone')
     };
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/admin/login`, {  
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/signin_phone`, {
         formData
       });
+      console.log(response);
       if(response.status === 200){
         localStorage.setItem('authUser', '12345'); // Store the token
-        localStorage.setItem('authToken', '12345'); // Store the token
-        window.location.href = '/admin_page'; // Redirect on successful login
-      }else{
-//        window.location.href = '/oops';
+        localStorage.setItem('phone', response.data.data.phone);
+        localStorage.setItem('option', response.data.data.option);
+        localStorage.setItem('date', response.data.data.option);
+        navigate("/playgame");
+      }else if(response.status === 201){
+        localStorage.setItem('authUser', '12345'); // Store the token
+        localStorage.setItem('phone', response.data.data.phone);
+        localStorage.setItem('option', response.data.data.option);
+        localStorage.setItem('date', response.data.data.option);
+        navigate("/success");
+      }else if(response.status === 202){
+        localStorage.setItem('authUser', '12345'); // Store the token
+        localStorage.setItem('phone', response.data.data.phone);
+        localStorage.setItem('option', response.data.data.option);
+        localStorage.setItem('date', response.data.data.option);
+        navigate("/pay_stripe");
+      }else if(response.status === 203 || response.status === 500){
+        navigate("/oops");
       }
     } catch (err) {
-  //    window.location.href = '/oops';
-      console.log(err);
+      navigate("/oops");
     }
   };
 
@@ -72,7 +88,7 @@ const SignInPage = () => {
       <CssBaseline />
       <StyledBox>
         <Typography component="h1" variant="h5">
-          Welcome to Admin
+          Welcome
         </Typography>
         <StyledForm onSubmit={handleSubmit}>
           <TextField
@@ -80,11 +96,11 @@ const SignInPage = () => {
             margin="normal"
             required
             fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="password"
+            name="phone"
+            label="12345678901"
+            type="number"
+            id="phone"
+            autoComplete="current-phone"
           />
           <StyledButton
             type="submit"
@@ -92,7 +108,7 @@ const SignInPage = () => {
             variant="contained"
             color="primary"
           >
-            Sign In
+            Submit
           </StyledButton>
         </StyledForm>
       </StyledBox>
@@ -100,4 +116,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default UserPage;

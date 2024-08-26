@@ -1,34 +1,64 @@
 const jwt = require('jsonwebtoken');
 const { send_verify_sms } = require('../config/sms');
-const { registUser } = require('../models/UserModel');
+const { registUser, getUser } = require('../models/UserModel');
 
 const registPhone = async (req, res) => {
     const { option, date, phone } = req.body.formData;
-    const emailToken = jwt.sign({ option, date, phone }, process.env.JWT_SECRET, { expiresIn: '1d' });
     try {
-        const url = `http://127.0.0.1:3000/verify_phone?token=${emailToken}`;
-        await send_verify_sms(phone, url);
-        res.status(201).send(url);
+        const user_info = await getUser(phone);
+        if(user_info){
+          res.status(203).send({data: 'The user is already registered.'});/////already registered user
+        }else{
+          const emailToken = jwt.sign({ option, date, phone }, process.env.JWT_SECRET, { expiresIn: '1d' });
+          const url = `${process.env.REACT_APP_API_URL}/verify_phone?token=${emailToken}`;
+          await send_verify_sms(phone, url);
+          res.status(200).send({data: 200});
+          console.log(url);
+        }
       } catch (error) {
         res.status(500).send(error.message);
     }
 }
 
 const verifyPhone = async (req, res) => {
-    try {
-        const { token } = req.query;
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = decoded.phone !== null && decoded.option !== null && decoded.date !== null? true: false;
-        if(!user){
-          res.redirect('http://localhost:3001/oops');
-          return res.status(404).send('error');  
-        }   
+  try {
+      const { token } = req.query;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = decoded.phone !== null && decoded.option !== null && decoded.date !== null? true: false;
+      if(!user){
+        res.redirect(`${process.env.FRONTEND_API_URL}/oops`);
+        return res.status(404).send('error');  
+      }else{
         await registUser(decoded);  
-        res.redirect(`http://localhost:3001/info_regist?phone=${decoded.phone}&option=${decoded.option}`);
-      } catch (error) {
-        res.redirect('http://localhost:3001/oops'); 
-        res.status(500).send(error.message);
-    }
+        res.redirect(`${process.env.FRONTEND_API_URL}/info_regist?phone=${decoded.phone}&option=${decoded.option}&date=${decoded.date}`);  
+      }   
+    } catch (error) {
+      res.redirect(`${process.env.FRONTEND_API_URL}/oops`); 
+      res.status(500).send(error.message);
+  }
 }
-  
-module.exports = { registPhone, verifyPhone };
+
+const signinPhone = async (req, res) => {
+  try {
+    const phone = req.body.formData.phone;
+    const user_info = await getUser(phone);
+    const payload = {
+      option: user_info.option,
+      phone: phone,
+      date: user_info.appointmentdate
+    }
+    if(user_info.firstname){
+      if(user_info.paystatus === '1'){
+        user_info.option === '1'?res.status(201).send({data: payload}):res.status(200).send({data: payload});//paid
+      }else{
+        res.status(202).send({data: payload});//stripe
+      }
+    }else{
+      res.status(203).send('ok');//no account
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+
+module.exports = { registPhone, verifyPhone, signinPhone };

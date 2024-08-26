@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 import TestExplanation from './step/TestExplanation';
 import FirstTest from './step/FirstTest';
@@ -8,8 +8,19 @@ import ThirdTest from './step/ThirdTest';
 import ForthTest from './step/ForthTest';
 
 const Game = () => {
-
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
     const [step, setStep] = useState(0);
+
+    const phone = queryParams.get('phone');
+    const option = queryParams.get('option');
+    const date = queryParams.get('date');
+    if(phone){
+      localStorage.setItem('authUser', '12345'); // Store the token
+      localStorage.setItem('phone', phone);
+      localStorage.setItem('option', option);
+      localStorage.setItem('date', date);
+    }
 
     const handleNext = () => 
     {
@@ -21,7 +32,7 @@ const Game = () => {
         setStep((prevStep) => prevStep - 1);
     }
     return (
-        <div style={{ backgroundImage: `url(1.jpg)`, backgroundSize: 'cover'}}>
+        <div>
             {step === 0 &&(
             <TestExplanation step={0} onNext={handleNext}/>
             )}

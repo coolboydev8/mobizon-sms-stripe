@@ -38,4 +38,5 @@ app.use('/stripe', stripeRoutes);
 app.use('/user', userRoutes);
 
 initializeDatabase();
+//send_mail();
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));

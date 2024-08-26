@@ -23,8 +23,8 @@ exports.initializeDatabase = async(req, res) => {
     await conn.query(`CREATE TABLE IF NOT EXISTS admin (
       id INT AUTO_INCREMENT PRIMARY KEY,
       password VARCHAR(255) NOT NULL,
-      phone VARCHAR(20) NOT NULL DEFAULT '123456789',
-      date DATETIME NOT NULL DEFAULT NOW()
+      email VARCHAR(255) NOT NULL,
+      price INT NOT NULL
     )`);
     await conn.query(`CREATE TABLE IF NOT EXISTS user (
       user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -47,10 +47,9 @@ exports.initializeDatabase = async(req, res) => {
     const hashedPassword = await bcrypt.hash('123', 10);
     const results = await conn.query('SELECT COUNT(*) AS count FROM admin');
     if(results[0].count === 0n){
-      await conn.query('INSERT INTO admin (password, phone, date) VALUES (?, ?, NOW())', [hashedPassword, '123456789']);
+      await conn.query('INSERT INTO admin (password, email, price) VALUES (?, ?, ?)', [hashedPassword, 'example@example.com', 10]);
     }
     console.log("Successed!");
-    // Check if the password already exists
   } catch (err){
     console.log(err.message);
   }

@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { checkoutPay } = require('../controllers/stripeController');
+const { createCheckout ,checkoutPay } = require('../controllers/stripeController');
 
-router.post('/create-checkout-session', checkoutPay);
+router.post('/create-checkout-session', createCheckout);
+router.post('/checkout-session', checkoutPay);
 
 module.exports = router;

@@ -1,37 +1,67 @@
 const { send_check_option } = require('../config/sms');
-const { updatePayStatus } = require('../models/UserModel');
+const { updatePayStatus, getUser } = require('../models/UserModel');
+const { getAdminInfo } = require('../models/AuthModel');
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-const checkoutPay = async (req, res) => {
-    try {
-      const { phone, option } = req.body;
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: 'appointment',
-              },
-              unit_amount: 1000,
+const createCheckout = async (req, res) => {
+  const response = await getAdminInfo();
+  const price = response[0].price
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'appointment',
             },
-            quantity: 1,
+            unit_amount: 100 * price,
           },
-        ],
-        mode: 'payment',
-        success_url: option === '1'?'http://localhost:3001/success': 'http://localhost:3001/playgame', 
-        cancel_url: 'http://localhost:3001/oops',
-      });
-      res.json({ id: session.id });
-      await updatePayStatus(req.body);
-      if(option === '1'){
-        send_check_option(phone);
-      }
-    } catch (error) {
-      console,log(error.message);
-      res.status(500).json({ error: error.message });
-    }
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_API_URL}/stripe_success?session_id={CHECKOUT_SESSION_ID}`, 
+      cancel_url: `${process.env.FRONTEND_API_URL}/oops`,
+    });
+    res.json({ id: session.id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
+}
 
-module.exports = { checkoutPay };
+const checkoutPay = async (req, res) => {
+  const sessionId = req.body.payload.session_id;
+  const date = req.body.payload.date;
+  const option = req.body.payload.option;
+  const phone = req.body.payload.phone;
+  let sendMsg_user = `Your reservation has been confirmed.\nOption: ${option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
+  let sendMsg_admin = `One reservation confirmed.\nOption: ${option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
+    
+  try {
+    const user = await getUser(phone);
+    // const admin = await getAdminInfo();
+    // const user_email = user.email;
+    // const admin_email = admin[0].email;    
+    if(user.paystatus === '1'){
+      res.status(202).json({data: 'You have already paid'});
+    }else{
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      if (session.payment_status === 'paid') {
+        await updatePayStatus(phone);
+       if(option === '1'){
+         send_check_option(phone, sendMsg_user);
+       }    
+        res.status(200).json({data: session});
+      } else {
+        res.status(201).json({ msg: 'Payment was not successful.' });
+      }   
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}  
+
+module.exports = { createCheckout ,checkoutPay };
