@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {CardItem, CardItem4} from '../CardItem';
+import {CardItem, CardItem4, CardDoubleItem} from '../CardItem';
 
 const Gameresult = ({ step, direct, dirStatTop, dirStatBottom}) => {
   return (
@@ -38,89 +38,142 @@ const Gameresult = ({ step, direct, dirStatTop, dirStatBottom}) => {
 
       {step === 4 &&(
         <div className="res2-grid-container">
-          <div className="grid-item button">
+          <div className="grid-item button-explanation" style={{display: 'block'}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/left.png' width={24} height={24}></img>
+            </div>
+            <div style={{height: '3vh'}}></div>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/left.png' width={24} height={24}></img>
+            </div>
           </div>
-          <div className="grid-item button">
+          <div className="grid-item button-explanation">
+            <img src='btn/up.png' width={24} height={24}></img>
+            <div style={{width: '3vw'}}>
+            </div>
             <img src='btn/down.png' width={24} height={24}></img>
           </div>
-          <div className="grid-item button">
+          <div className="grid-item button-explanation">
+            <img src='btn/down.png' width={24} height={24}></img>
+            <div style={{width: '3vw'}}>
+            </div>
             <img src='btn/down.png' width={24} height={24}></img>
           </div>
-          <div className="grid-item button">
+          <div className="grid-item button-explanation">
+            <img src='btn/up.png' width={24} height={24}></img>
+            <div style={{width: '3vw'}}>
+            </div>
             <img src='btn/down.png' width={24} height={24}></img>
           </div>
-          <div className="grid-item button">
+          <div className="grid-item button-explanation">
+            <img src='btn/up.png' width={24} height={24}></img>
+            <div style={{width: '3vw'}}>
+            </div>
+            <img src='btn/up.png' width={24} height={24}></img>
           </div>
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
+          <div className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
           </div>        
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
-            {direct[0] === 'down' &&(
-                <img src='btn_res/down_res.png' width={24} height={24}></img>
-              )}
+          <div className="grid-item button-explanation" style={direct[0] === 'down'?{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}:{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
+            <img src={`btn_res/${direct[0]}_res.png`} width={24} height={24}></img>
           </div>          
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
-            {direct[1] === 'down' &&(
-                <img src='btn_res/down_res.png' width={24} height={24}></img>
-              )}  
+          <div className="grid-item button-explanation" style={direct[1] === 'down'?{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}:{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
+            <img src={`btn_res/${direct[1]}_res.png`} width={24} height={24}></img>  
           </div>        
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
-            {direct[2] === 'down' &&(
-                <img src='btn_res/down_res.png' width={24} height={24}></img>
-              )}
+          <div className="grid-item button-explanation" style={direct[2] === 'down'?{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}:{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
+            <img src={`btn_res/${direct[2]}_res.png`} width={24} height={24}></img>
           </div>        
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
+          <div className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
           </div>        
           
-          <div className="grid-item button">
+          <div className="grid-item button-explanation">
+            <img src='btn/up.png' width={24} height={24}></img>
+            <div style={{width: '3vw'}}>
+            </div>
             <img src='btn/down.png' width={24} height={24}></img>
           </div>
-          <div className="grid-item button">
+          <div className="grid-item button-explanation" style={{display: 'block'}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/right.png' width={24} height={24}></img>
+            </div>
+            <div style={{height: '3vh'}}></div>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/right.png' width={24} height={24}></img>
+            </div>
           </div>
-          <div className="grid-item button">
+          <div className="grid-item button-explanation" style={{display: 'block'}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/right.png' width={24} height={24}></img>
+            </div>
+            <div style={{height: '3vh'}}></div>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/left.png' width={24} height={24}></img>
+            </div>
           </div>
-          <div className="grid-item button">
+          <div className="grid-item button-explanation" style={{display: 'block'}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/left.png' width={24} height={24}></img>
+            </div>
+            <div style={{height: '3vh'}}></div>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/left.png' width={24} height={24}></img>
+            </div>
           </div>
-          <div className="grid-item button">
+          <div className="grid-item button-explanation" style={{display: 'block'}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/right.png' width={24} height={24}></img>
+            </div>
+            <div style={{height: '3vh'}}></div>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <img src='btn/left.png' width={24} height={24}></img>
+            </div>
           </div>
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
-            {direct[3] === 'down' &&(
-              <img src='btn_res/down_res.png' width={24} height={24}></img>
-            )}
+          <div className="grid-item button-explanation" style={direct[3] === 'down'?{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}:{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
+            <img src={`btn_res/${direct[3]}_res.png`} width={24} height={24}></img>
           </div>          
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
+          <div className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
           </div>          
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
+          <div className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
           </div>          
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
+          <div className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
           </div>          
-          <div className="grid-item button" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px'}}>
+          <div className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
           </div>          
           </div>
         )} 
       {step === 6 &&(
         <div className="res2-grid-container">
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='row'
+            mainfirstSrc="btn/close.png"
+            mainsecondSrc="btn/up.png"
             leftSrc="btn_res/up_res.png"
             rightSrc="btn_res/left_res.png"
           />
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='col'
+            mainfirstSrc="btn/close.png"
+            mainsecondSrc="btn/right.png"
             leftSrc="btn_res/right_res.png"
             rightSrc="btn_res/up_res.png"
           />
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='row'
+            mainfirstSrc="btn/down.png"
+            mainsecondSrc="btn/close.png"
             leftSrc="btn_res/down_res.png"
             rightSrc="btn_res/right_res.png"
           />
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='col'
+            mainfirstSrc="btn/left.png"
+            mainsecondSrc="btn/close.png"
             leftSrc="btn_res/left_res.png"
             rightSrc="btn_res/down_res.png"
           />
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='row'
+            mainfirstSrc="btn/close.png"
+            mainsecondSrc="btn/left.png"
             leftSrc="btn_res/left_res.png"
             rightSrc="btn_res/left_res.png"
           />
@@ -145,54 +198,63 @@ const Gameresult = ({ step, direct, dirStatTop, dirStatBottom}) => {
               </div>          
             )
           ))}
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='row'
+            mainfirstSrc="btn/close.png"
+            mainsecondSrc="btn/down.png"
             leftSrc="btn_res/down_res.png"
             rightSrc="btn_res/left_res.png"
           />
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='col'
+            mainfirstSrc="btn/right.png"
+            mainsecondSrc="btn/close.png"
             leftSrc="btn_res/right_res.png"
             rightSrc="btn_res/down_res.png"
           />
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='row'
+            mainfirstSrc="btn/up.png"
+            mainsecondSrc="btn/close.png"
             leftSrc="btn_res/up_res.png"
             rightSrc="btn_res/right_res.png"
           />
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='col'
+            mainfirstSrc="btn/close.png"
+            mainsecondSrc="btn/up.png"
             leftSrc="btn_res/up_res.png"
             rightSrc="btn_res/up_res.png"
           />
-          <CardItem 
-            mainSrc="btn/down.png"
+          <CardDoubleItem 
+            dir='col'
+            mainfirstSrc="btn/close.png"
+            mainsecondSrc="btn/down.png"
             leftSrc="btn_res/down_res.png"
             rightSrc="btn_res/up_res.png"
           />
           {dirStatBottom.map((item, index) => (
+            
             item === true ? (
               <div key={index} className="res3-true-button" style={{backgroundColor: '#fb544e'}}>
                 <div className="res-leftbtn">
-                  <img src={`btn_res/${direct[index * 2]}_res.png`} width={24} height={24} alt='left'/>  
+                  <img src={`btn_res/${direct[index * 2 + 10]}_res.png`} width={24} height={24} alt='left'/>  
                 </div>
                 <div className="res-rightbtn">
-                  <img src={`btn_res/${direct[index * 2 + 1]}_res.png`} width={24} height={24} alt='left'/>  
+                  <img src={`btn_res/${direct[index * 2 + 11]}_res.png`} width={24} height={24} alt='left'/>  
                 </div>
               </div>          
             ):(
               <div key={index} className="res3-true-button">
                 <div className="res-leftbtn">
-                  <img src={`btn_res/${direct[index * 2]}_res.png`} width={24} height={24} alt='left'/>  
+                  <img src={`btn_res/${direct[index * 2 + 10]}_res.png`} width={24} height={24} alt='left'/>  
                 </div>
                 <div className="res-rightbtn">
-                  <img src={`btn_res/${direct[index * 2 + 1]}_res.png`} width={24} height={24} alt='left'/>  
+                  <img src={`btn_res/${direct[index * 2 + 11]}_res.png`} width={24} height={24} alt='left'/>  
                 </div>
               </div>          
             )
           ))} 
-
-
         </div>
       )}
       {step === 8 &&(

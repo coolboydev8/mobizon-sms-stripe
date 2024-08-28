@@ -468,7 +468,7 @@ const EnhancedTable = () => {
                       key={row.user_id}
                       sx={{ cursor: 'pointer' }}
                     >
-                      <StyledTableCell align='center'>{row.option}</StyledTableCell>
+                      <StyledTableCell align='center'>{row.role_option}</StyledTableCell>
                       <StyledTableCell align="left">{row.appointmentdate}</StyledTableCell>
                       <StyledTableCell align="center">{row.phone}</StyledTableCell>
                       <StyledTableCell align="left">{row.firstname}</StyledTableCell>

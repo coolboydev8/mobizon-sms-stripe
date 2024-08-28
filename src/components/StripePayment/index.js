@@ -46,12 +46,12 @@ const StripePage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const phone = queryParams.get('phone');
-  const option = queryParams.get('option');
+  const role_option = queryParams.get('role_option');
   const date = queryParams.get('date');
   if(phone){
     localStorage.setItem('authUser', '12345'); // Store the token
     localStorage.setItem('phone', phone);
-    localStorage.setItem('option', option);
+    localStorage.setItem('role_option', role_option);
     localStorage.setItem('date', date);
   }
   const handleCheckout = async () => {

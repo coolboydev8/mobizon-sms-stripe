@@ -33,16 +33,16 @@ const updateGameStatus = async (req, res) => {
 
 const confirmAppointment = async(req, res) => {
     const date = req.body.payload_confirm.date;
-    const option = req.body.payload_confirm.option;
+    const role_option = req.body.payload_confirm.role_option;
     const phone = req.body.payload_confirm.phone;  
-    let sendMsg_user = `Your reservation has been confirmed.\nOption: ${option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
-    let sendMsg_admin = `One reservation confirmed.\nOption: ${option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
+    let sendMsg_user = `Your reservation has been confirmed.\nOption: ${role_option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
+    let sendMsg_admin = `One reservation confirmed.\nOption: ${role_option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
     try{
         const user = await getUser(phone);
         const admin = await getAdminInfo();
         const user_email = user.email;
         const admin_email = admin[0].email;
-        send_check_option(phone, sendMsg);
+        send_check_option(phone, sendMsg_user);
         // const mailOptions_user = {
         //   from: admin_email,  // Sender address
         //   to: user_email,             // List of recipients

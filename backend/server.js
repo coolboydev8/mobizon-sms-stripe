@@ -9,7 +9,7 @@ const phoneRoutes = require('./routes/phoneRoutes');
 const stripeRoutes = require('./routes/stripeRoutes');
 const userRoutes = require('./routes/userRoutes');
 
-const { initializeDatabase } = require('./config/dbconfig');
+const { initializeDatabase } = require('./config/initialDB');
 const { send_mail } = require('./config/maiiSend');
 
 const nodemailer = require('nodemailer');

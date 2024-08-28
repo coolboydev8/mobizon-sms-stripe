@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import Gameresult from './Gameresult';
 
+var first_tempDirStat, second_tempDirStat;
 const ThirdTest = ({ step, onNext, onPrevious }) => {
   const [imageVisible, setImageVisible] = useState(false);
   const [reactionTimeStatus, setReactionTimeStatus] = useState(false);
@@ -36,10 +37,8 @@ const ThirdTest = ({ step, onNext, onPrevious }) => {
     'down',
     'up'
   ];
-  let tempDirStat = false;
   const phone = localStorage.getItem('phone');
   const payload_step = step / 2;
-
   useEffect(() => {
     let interval;
     if (testCount < 11) {
@@ -50,9 +49,9 @@ const ThirdTest = ({ step, onNext, onPrevious }) => {
         setBtnTwoTimes(0);
         setTimeout(() => {
           setImageVisible(false);
-        }, 1500); // Image is visible for 500ms
+        }, 2500); // Image is visible for 500ms
         setTestCount((prevCount) => prevCount + 1);  
-      }, 2000); // Image is displayed every 1 second
+      }, 3000); // Image is displayed every 1 second
     } else {
       clearInterval(interval);
     }
@@ -63,23 +62,27 @@ const ThirdTest = ({ step, onNext, onPrevious }) => {
     if (imageVisible) {
       if(btnTwoTimes === 0){
         if(direction !== directDataList[2 * (directionCount - 1)]){
-          tempDirStat = true;
+          first_tempDirStat = true;
           setDirectionStatus(true);
+        }else{
+          first_tempDirStat = false;
         }
         setDirectionData([...directionData, direction]);
         setBtnTwoTimes(1);
       }else if(btnTwoTimes === 1){
         if(direction !== directDataList[2 * (directionCount - 1) + 1]){
-          tempDirStat = true;
+          second_tempDirStat = true;
           setDirectionStatus(true);
+        }else{
+          second_tempDirStat = false;
         }
         if(directionCount < 6){
-          setDirectionStatusTop([...directionStatusTop, tempDirStat]);
+          setDirectionStatusTop([...directionStatusTop, (first_tempDirStat || second_tempDirStat)]);
         }else{
-          setDirectionStatusBottom([...directionStatusBottom, tempDirStat]);
+          setDirectionStatusBottom([...directionStatusBottom, (first_tempDirStat || second_tempDirStat)]);
         }
         setDirectionData([...directionData, direction]);
-        let reactionTime = (Date.now() - startTimeRef.current)<1300? 1:0;
+        let reactionTime = (Date.now() - startTimeRef.current)<2300? 1:0;
         if(reactionTime === 0){
           setReactionTimeStatus(true);        
         }

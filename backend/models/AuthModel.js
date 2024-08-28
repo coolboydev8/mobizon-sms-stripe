@@ -1,98 +1,68 @@
-const { dbGetConnection } = require('../config/dbconfig');
+const pool = require('../config/dbconfig');
 const bcrypt = require('bcrypt');
 
 exports.getPasswordHash = async() => {
-  let conn;
   try {
-    conn = await dbGetConnection();
-    const rows = await conn.query('SELECT password FROM admin WHERE id = 1');
-    return rows[0].password;
-  } finally {
-    if (conn) conn.end();
+    const rows = await pool.query('SELECT password FROM admin WHERE id = 1');
+    return rows[0][0].password;
+  }catch(err) {
+    console.log(err);
   }
 }
 
 exports.updateDate = async(newDate) => {
-  let conn;
   try {
-    conn = await dbGetConnection();
-    await conn.query('UPDATE admin SET date = ? WHERE id = 1', [newDate]);
-    conn.end();
-  } catch(err) {
+    await pool.query('UPDATE admin SET date = ? WHERE id = 1', [newDate]);
+  }catch(err) {
     console.log(err);
-    if (conn) conn.end();
   }
 }
 
 exports.updatePhone = async(newPhone) => {
-  let conn;
   try {
-    conn = await dbGetConnection();
-    await conn.query('UPDATE admin SET phone = ? WHERE id = 1', [newPhone]);
-    conn.end();
-  } catch(err) {
+    await pool.query('UPDATE admin SET phone = ? WHERE id = 1', [newPhone]);
+  }catch(err) {
     console.log(err);
-    if (conn) conn.end();
   }
 }
 exports.updateEmail = async(newEmail) => {
-  let conn;
   try {
-    conn = await dbGetConnection();
-    await conn.query('UPDATE admin SET email = ? WHERE id = 1', [newEmail]);
-    conn.end();
-  } catch(err) {
+    await pool.query('UPDATE admin SET email = ? WHERE id = 1', [newEmail]);
+  }catch(err) {
     console.log(err);
-    if (conn) conn.end();
   }
 }
 exports.updatePrice = async(newPrice) => {
-  let conn;
   try {
-    conn = await dbGetConnection();
-    await conn.query('UPDATE admin SET price = ? WHERE id = 1', [newPrice]);
-    conn.end();
-  } catch(err) {
+    await pool.query('UPDATE admin SET price = ? WHERE id = 1', [newPrice]);
+  }catch(err) {
     console.log(err);
-    if (conn) conn.end();
   }
 }
 
 exports.updatePassword = async(newPassword) => {
   const hash = await bcrypt.hash(newPassword, 10);
-  let conn;
   try {
-    conn = await dbGetConnection();
-    await conn.query('UPDATE admin SET password = ? WHERE id = 1', [hash]);
-    conn.end();
-  } catch(err) {
+    await pool.query('UPDATE admin SET password = ? WHERE id = 1', [hash]);
+  }catch(err) {
     console.log(err);
-    if (conn) conn.end();
   }
 }
 
 exports.getAdminInfo = async() => {
-  let conn;
   try {
-    conn = await dbGetConnection();
-    const result = await conn.query('SELECT * FROM admin');
-    conn.end();
-    return result;
-  } catch(err) {
+    const result = await pool.query('SELECT * FROM admin');
+    return result[0];
+  }catch(err) {
     console.log(err);
-    if (conn) conn.end();
   }
 }
 exports.getAppointmentDate = async() => {
-  let conn;
   try {
-    conn = await dbGetConnection();
-    const result = await conn.query('SELECT * FROM admin');
-    conn.end();
-    return result[0].date;
-  } catch(err) {
+    const result = await pool.query('SELECT * FROM admin');
+    return result[0][0].date;
+  }catch(err) {
     console.log(err);
-    if (conn) conn.end();
   }
 }
 

@@ -27,5 +27,22 @@ const CardItem4 = ({mainSrc, leftSrc}) => {
     </div>
 }
 
+const CardDoubleItem = ({dir, mainfirstSrc, mainsecondSrc, leftSrc, rightSrc}) => {
+    return <div className={styles.container}>
+        <div className={styles.body} style={dir === 'row'?{display: 'flex', justifyContent: 'center', gap: 10}: {}}>
+            <img src={mainfirstSrc} width={30} height={30} alt='left'/>
+            <img src={mainsecondSrc} width={30} height={30} alt='left'/>
+        </div>
+        <div className={styles.footer}>
+            <div className={styles.leftbtn}>
+                <img src={leftSrc} width={24} height={24} alt='left'/>
+            </div>
+            <div className={styles.rightbtn}>
+                <img src={rightSrc} width={24} height={24} alt='right'/>
+            </div>
+        </div>
+    </div>
+}
 
-export {CardItem, CardItem4};
+
+export {CardItem, CardItem4, CardDoubleItem};

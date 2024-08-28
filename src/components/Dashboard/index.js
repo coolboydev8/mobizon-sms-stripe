@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 import { TextField, 
@@ -51,11 +51,14 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const FirstPage = () => {
+  const [btnClicked, setBtnClicked] = useState(false);
+
   const handleSubmit = async(event) => {
     event.preventDefault();
+    setBtnClicked(true);
     const data = new FormData(event.currentTarget);
     const formData = {
-      option: data.get('option'),
+      role_option: data.get('role_option'),
       date: data.get('date'),
       phone: data.get('phone'),
     };
@@ -82,9 +85,9 @@ const FirstPage = () => {
           <RadioGroup
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
-            name="option"
+            name="role_option"
             defaultValue="1"
-            id="option"
+            id="role_option"
           >
             <FormControlLabel value="1" control={<Radio />} label="Option 1" />
             <FormControlLabel sx={{visibility: 'hidden'}} control={<Radio />} />
@@ -117,6 +120,7 @@ const FirstPage = () => {
             fullWidth
             variant="contained"
             color="primary"
+            disabled={btnClicked}
           >
             Submit
           </StyledButton>

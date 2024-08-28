@@ -35,10 +35,10 @@ const createCheckout = async (req, res) => {
 const checkoutPay = async (req, res) => {
   const sessionId = req.body.payload.session_id;
   const date = req.body.payload.date;
-  const option = req.body.payload.option;
+  const role_option = req.body.payload.role_option;
   const phone = req.body.payload.phone;
-  let sendMsg_user = `Your reservation has been confirmed.\nOption: ${option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
-  let sendMsg_admin = `One reservation confirmed.\nOption: ${option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
+  let sendMsg_user = `Your reservation has been confirmed.\nOption: ${role_option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
+  let sendMsg_admin = `One reservation confirmed.\nOption: ${role_option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
     
   try {
     const user = await getUser(phone);
@@ -51,7 +51,7 @@ const checkoutPay = async (req, res) => {
       const session = await stripe.checkout.sessions.retrieve(sessionId);
       if (session.payment_status === 'paid') {
         await updatePayStatus(phone);
-       if(option === '1'){
+       if(role_option === '1'){
          send_check_option(phone, sendMsg_user);
        }    
         res.status(200).json({data: session});

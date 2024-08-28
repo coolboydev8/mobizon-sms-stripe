@@ -13,31 +13,31 @@ const send_verify_sms = async(recipient, message) => {
     let shortUrl, sendMsg;
     try {
 ////short link
-        // const params = {
-        //     apiKey: API_KEY,
-        //     data: {
-        //         fullLink: message,
-        //         status: 1,
-        //         expirationDate: '',
-        //         comment: 'Shortened link.',
-        //     }
-        // }
+        const params = {
+            apiKey: API_KEY,
+            data: {
+                fullLink: message,
+                status: 1,
+                expirationDate: '',
+                comment: 'Shortened link.',
+            }
+        }
         
-        // const shortenResponse = await axios.post(MOBIZON_Create_ShortLink, null, { params });
+        const shortenResponse = await axios.post(MOBIZON_Create_ShortLink, null, { params });
         
-        // if (shortenResponse.data.code !== 0) {
-        //     throw new Error(`Error shortening URL: ${shortenResponse.data.message}`);
-        // }
+        if (shortenResponse.data.code !== 0) {
+            throw new Error(`Error shortening URL: ${shortenResponse.data.message}`);
+        }
 
-        // shortUrl = shortenResponse.data.data.shortLink;
-        // sendMsg = `Here is your link:\n ${shortUrl}`;
+        shortUrl = shortenResponse.data.data.shortLink;
+        sendMsg = `Here is your link:\n ${shortUrl}`;
     
 //Send Msg
         const response = await axios.post(MOBIZON_API_SendMessage, null, {
             params: {
                 apiKey: API_KEY,
                 recipient: recipient,
-                text: message
+                text: sendMsg
             }
         });
 

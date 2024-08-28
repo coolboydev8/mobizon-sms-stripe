@@ -22,9 +22,8 @@ const ForthTest = ({ step, onNext, onPrevious }) => {
         setTestCount((prevCount) => prevCount + 1);
       }, 5000); // Image is displayed every 1 second
       setTimeout(() => {
-        setImageVisible(false);
-      }, 3500); // Image is visible for 500ms
-
+       setImageVisible(false);
+      }, 4000); // Image is visible for 500ms
     } else {
       clearInterval(interval);
     }
@@ -35,7 +34,7 @@ const ForthTest = ({ step, onNext, onPrevious }) => {
     if (imageVisible) {
       if(testCount === 0 && directionData.length === 0){
         setDirectionData([...directionData, direction]);
-        const reactionTime = (Date.now() - startTimeRef.current)<3300? 1:0;
+        const reactionTime = (Date.now() - startTimeRef.current)<4000? 1:0;
         if(reactionTime === 0){
           setReactionTimeStatus(true);        
         }  
@@ -45,7 +44,7 @@ const ForthTest = ({ step, onNext, onPrevious }) => {
       }
       if(testCount === 1 && directionData.length === 1){
         setDirectionData([...directionData, direction]);
-        const reactionTime = (Date.now() - startTimeRef.current)<3300? 1:0;
+        const reactionTime = (Date.now() - startTimeRef.current)<4500? 1:0;
         if(reactionTime === 0){
           setReactionTimeStatus(true);        
         }  
@@ -140,22 +139,24 @@ const ForthTest = ({ step, onNext, onPrevious }) => {
         <div className="container">
         <div className="test-leftPane">
           {imageVisible && testCount === 0 &&(
-              <div style={{display: 'flex', paddingLeft: '10px', paddingRight: '10px'}}>
-              <div className="grid-item button" style={{marginBottom: '10px', border: 0, height: '1%'}}>
-                <img src='btn/4_icon.png'width={100} height={100}></img>
-              </div>
-              <div className="grid-item button" style={{border: 0, border: '1px solid black'}}>
-                <img src='btn/4_1.png'width={300} height={300}></img>
-              </div>
+              <div>
+                <div className="button-explanation" style={{display: 'block', width: 'fit-content'}}>
+                  <img src='btn/4_icon.png'width={100} height={100}></img>
+                </div>
+                <div style={{height: '3vh'}}></div>
+                <div className="button-explanation">
+                  <img src='btn/4_1.png'width={400} height={400}></img>
+                </div>
             </div>
           )}
           {imageVisible && testCount === 1 &&(
-              <div style={{display: 'flex', paddingLeft: '10px', paddingRight: '10px'}}>
-              <div className="grid-item button" style={{marginBottom: '10px', border: 0, height: '1%'}}>
+            <div>
+              <div className="button-explanation" style={{display: 'block', width: 'fit-content'}}>                
                 <img src='btn/4_icon.png'width={100} height={100}></img>
               </div>
-              <div className="grid-item button" style={{border: 0, border: '1px solid black'}}>
-                <img src='btn/4_2.png'width={300} height={300}></img>
+              <div style={{height: '3vh'}}></div>
+              <div className="button-explanation">
+                <img src='btn/4_2.png'width={400} height={400}></img>
               </div>
             </div>
           )}

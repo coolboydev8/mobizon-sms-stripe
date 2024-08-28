@@ -22,6 +22,7 @@ exports.get_appointment_date = async(req, res) => {
 exports.login = async(req, res) =>{
   const password = req.body.formData.password;
   const hash = await getPasswordHash();
+  
   try{
     if (await bcrypt.compare(password, hash)) {
       res.status(200).json({ data: 200 });

@@ -60,20 +60,20 @@ const UserPage = () => {
       if(response.status === 200){
         localStorage.setItem('authUser', '12345'); // Store the token
         localStorage.setItem('phone', response.data.data.phone);
-        localStorage.setItem('option', response.data.data.option);
-        localStorage.setItem('date', response.data.data.option);
+        localStorage.setItem('role_option', response.data.data.role_option);
+        localStorage.setItem('date', response.data.data.role_option);
         navigate("/playgame");
       }else if(response.status === 201){
         localStorage.setItem('authUser', '12345'); // Store the token
         localStorage.setItem('phone', response.data.data.phone);
-        localStorage.setItem('option', response.data.data.option);
-        localStorage.setItem('date', response.data.data.option);
+        localStorage.setItem('role_option', response.data.data.role_option);
+        localStorage.setItem('date', response.data.data.role_option);
         navigate("/success");
       }else if(response.status === 202){
         localStorage.setItem('authUser', '12345'); // Store the token
         localStorage.setItem('phone', response.data.data.phone);
-        localStorage.setItem('option', response.data.data.option);
-        localStorage.setItem('date', response.data.data.option);
+        localStorage.setItem('role_option', response.data.data.role_option);
+        localStorage.setItem('date', response.data.data.role_option);
         navigate("/pay_stripe");
       }else if(response.status === 203 || response.status === 500){
         navigate("/oops");

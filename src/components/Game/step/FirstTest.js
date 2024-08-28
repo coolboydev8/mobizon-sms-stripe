@@ -15,7 +15,7 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
   const [testCount, setTestCount] = useState(0);
   const startTimeRef = useRef(null);
   const phone = localStorage.getItem('phone');
-  const option = localStorage.getItem('option');
+  const role_option = localStorage.getItem('role_option');
   const date = localStorage.getItem('date');
   const payload_step = step / 2;
 
@@ -62,7 +62,7 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
     }
     const payload_confirm = {
       phone,
-      option,
+      role_option,
       date
     }
     try {
@@ -74,9 +74,9 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
     }
     if(step === 10){
       try {
-        await axios.post(`${process.env.REACT_APP_API_URL}/user/confirm_appointment`, {
-          payload_confirm
-        });
+        // await axios.post(`${process.env.REACT_APP_API_URL}/user/confirm_appointment`, {
+        //   payload_confirm
+        // });
         navigate('/success');
       } catch (err) {
         navigate('/oops');
@@ -112,7 +112,7 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
     }
     const payload_confirm = {
       phone,
-      option,
+      role_option,
       date
     }
     try {

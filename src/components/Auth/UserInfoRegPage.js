@@ -51,7 +51,7 @@ const UserInfoRegPage = () => {
 
   const queryParams = new URLSearchParams(location.search);
   const phone = queryParams.get('phone');
-  const option = queryParams.get('option');
+  const role_option = queryParams.get('role_option');
   const date = queryParams.get('date');
 
   const handleSubmit = async(event) => {
@@ -79,7 +79,7 @@ const UserInfoRegPage = () => {
         alert("Saved Ok");
         localStorage.setItem('authUser', '12345'); // Store the token
         localStorage.setItem('phone', phone);
-        localStorage.setItem('option', option);
+        localStorage.setItem('role_option', role_option);
         localStorage.setItem('date', date);
         navigate("/pay_stripe")
       }

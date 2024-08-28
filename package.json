@@ -25,6 +25,7 @@
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.3.1",
+    "mysql2": "^3.11.0",
     "nodemailer": "^6.9.14",
     "nodemon": "^3.1.4",
     "react": "^18.3.1",
@@ -36,7 +37,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "cross-env PORT=3001 react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

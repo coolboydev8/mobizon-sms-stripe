@@ -47,7 +47,7 @@ const SuccessPage = () => {
     const [session, setSession] = useState(null);
     const [payStatus, setPayStatus] = useState(0);
     const phone = localStorage.getItem('phone');
-    const option = localStorage.getItem('option');
+    const role_option = localStorage.getItem('role_option');
     const date = localStorage.getItem('date');
   
     useEffect(() => {
@@ -55,7 +55,7 @@ const SuccessPage = () => {
         const sessionId = query.get('session_id');
         const payload = {
           session_id: sessionId,
-          option: option, 
+          role_option: role_option, 
           phone: phone, 
           date: date
         };
@@ -116,8 +116,8 @@ const SuccessPage = () => {
             Payment was not successful. Please try again.
           </Typography>
         )}
-        <StyledButton variant="contained" color="primary" href={(option === '2' && payStatus)?"/playgame":"/"}>
-          {(option === '2' && payStatus)?'Play Game': 'Go to Home'}
+        <StyledButton variant="contained" color="primary" href={(role_option === '2' && payStatus)?"/playgame":"/"}>
+          {(role_option === '2' && payStatus)?'Play Game': 'Go to Home'}
         </StyledButton>
       </StyledBox>
     </StyledContainer>

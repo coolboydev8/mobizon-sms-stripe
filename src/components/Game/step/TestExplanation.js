@@ -33,7 +33,6 @@ const TestExplanation = ({ step, onNext, onPrevious }) => {
                   </div>
                 </div>
               </div>
-
             )}
             {step === 5 &&(
               <div>
