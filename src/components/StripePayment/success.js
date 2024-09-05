@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import { Container, CssBaseline, Box, Typography, Button } from '@mui/material';
+import { Container, CssBaseline, Box, Typography, Button, CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
@@ -44,35 +45,35 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const SuccessPage = () => {
     const location = useLocation();
+    const { t } = useTranslation();
     const [session, setSession] = useState(null);
-    const [payStatus, setPayStatus] = useState(0);
+    const [payStatus, setPayStatus] = useState(3);//loading
     const phone = localStorage.getItem('phone');
     const role_option = localStorage.getItem('role_option');
-    const date = localStorage.getItem('date');
   
     useEffect(() => {
         const query = new URLSearchParams(location.search);
         const sessionId = query.get('session_id');
         const payload = {
           session_id: sessionId,
-          role_option: role_option, 
-          phone: phone, 
-          date: date
+          phone: phone
         };
         const checkPay = async() => {
           if (sessionId) {
             try{        
-                const response = await axios.post(`${process.env.REACT_APP_API_URL}/stripe/checkout-session`, {
-                  payload
-                });
-                if(response.status === 200){
-                    setPayStatus(1);
-                    setSession(response.data.data);
-                }else if(response.status === 201){
-                    setPayStatus(0);
-                }else if(response.status === 202){
-                    setPayStatus(2);
-                }    
+              const response = await axios.post(`${process.env.REACT_APP_API_URL}/stripe/checkout-session`, {
+                payload
+              });
+              if(response.status === 200){
+                setPayStatus(0);
+                setSession(response.data.data);
+              }else if(response.status === 201){
+                setPayStatus(1);
+                setSession(response.data.data);
+              }else if(response.status === 202){
+                setPayStatus(2);
+                setSession(response.data.data);
+              }  
             }catch(err){
                 console.error(err);
             }
@@ -85,7 +86,19 @@ const SuccessPage = () => {
     <StyledContainer component="main" maxWidth="disable">
       <CssBaseline />
       <StyledBox>
-        {(payStatus === 1 || payStatus === 2) &&(
+        {payStatus === 3 &&(
+            <>
+              <CircularProgress />
+              <br/>
+              <Typography component="h1" variant="h5" sx={{ marginTop: 2 }}>
+                {t('stripe-loading')}
+              </Typography>
+              <Typography variant="body1" align="center" sx={{ marginTop: 1 }}>
+                {t('stripe-wait')}
+              </Typography>
+            </>
+        )}
+        {(payStatus === 1) &&(
             <StyledIcon />
         )}
         {payStatus === 0 &&(
@@ -93,35 +106,61 @@ const SuccessPage = () => {
         )}
         {payStatus === 0 &&(
           <Typography component="h1" variant="h5">
-            Payment Failed!
+            {t('stripe-failed')}
           </Typography>
         )}
         {payStatus === 1 &&(
           <Typography component="h1" variant="h5">
-            Payment Success!
+            {t('stripe-success')}
           </Typography>
         )}
         {payStatus === 2 &&(
-          <Typography component="h1" variant="h5">
-            You have already paid!
-          </Typography>
+          <>
+            <CircularProgress />
+            <br/>
+            <Typography component="h1" variant="h5">
+              Hold tight, your order is being processed. We will message or email you when your order succeeds.
+            </Typography>
+          </>
         )}
-        {payStatus === 1 &&(
+        {(payStatus === 1) &&(
           <Typography variant="body1" align="center">
-            Payment for {session.amount_total / 100} {session.currency.toUpperCase()} was successful!
+            {t('stripe-pay-before')} {session.amount_total / 100} {session.currency.toUpperCase()} {t('stripe-pay-after')}
           </Typography>
         )}
         {payStatus === 0 &&(
           <Typography variant="body1" align="center">
-            Payment was not successful. Please try again.
+            {t('stripe-retry')}
           </Typography>
         )}
-        <StyledButton variant="contained" color="primary" href={(role_option === '2' && payStatus)?"/playgame":"/"}>
-          {(role_option === '2' && payStatus)?'Play Game': 'Go to Home'}
-        </StyledButton>
-      </StyledBox>
+        <div style={{display: 'flex', gap: 10}}>
+          {(payStatus === 1 && role_option === '2')&&(
+            <StyledButton variant="contained" color="primary" href="/playgame">
+              {t('game')}
+            </StyledButton>
+          )}
+          {(payStatus === 1 && role_option === '1')&&(
+            <StyledButton variant="contained" color="primary" href="/success">
+              {t('game-next')}
+            </StyledButton>
+          )}
+          {(payStatus === 1 || payStatus === 2) &&(
+            <StyledButton variant="contained" color="primary" href="/">
+              {t('home')}
+            </StyledButton>
+          )}
+        </div>
+        </StyledBox>
     </StyledContainer>
   );
 }
 
 export default SuccessPage;
+
+
+
+
+
+
+
+

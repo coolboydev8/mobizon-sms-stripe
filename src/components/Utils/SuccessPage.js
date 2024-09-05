@@ -1,5 +1,8 @@
-import React from 'react';
-import { Container, CssBaseline, Box, Typography, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import axios from 'axios';
+
+import { Container, CssBaseline, Box, Typography, Button, CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
@@ -35,19 +38,91 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const SuccessPage = () => {
+  const [payStatus, setPayStatus] = useState('');
+  const [wrongTest, setWrongTest] = useState('');
+  const [wrongTestCount, setWrongTestCount] = useState();
+  const phone = localStorage.getItem('phone');
+  const date = localStorage.getItem('date');
+  const role_optioin = localStorage.getItem('role_option');
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    const  payload = {
+      phone
+    }
+    const fetchData = async() => {
+      try {
+        const res_pay = await axios.post(`${process.env.REACT_APP_API_URL}/user//get_user_paystatus`, {
+          payload
+        });
+        if(res_pay.status === 200){
+          setPayStatus(res_pay.data.data);
+        }
+        
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/get_option2_game`, {
+          payload
+        });
+        if(response.status === 200){
+          let  wrongTest = response.data.data;
+          setWrongTestCount(wrongTest.length);
+          if(wrongTest.length !== 0){
+            let tempText = '';
+            for(let i = 0; i < wrongTest.length; i ++){
+              if(i === wrongTest.length - 1){
+                tempText = tempText + 'Test ' + wrongTest[i];  
+              }else{
+                tempText = tempText + 'Test ' + wrongTest[i] + ' and ';
+              }
+            }  
+            setWrongTest(tempText);
+          }
+        }
+      } catch (err) {
+        alert(err);
+      }  
+    }
+    if(payStatus !== '2'){
+      fetchData();
+    }
+  }, []);
+
   return (
     <StyledContainer component="main" maxWidth="disable">
       <CssBaseline />
       <StyledBox>
-        <StyledIcon />
-        <Typography component="h1" variant="h5">
-          Success.
-        </Typography>
-        <Typography variant="body1" align="center">
-          Your operation was completed successfully.
-        </Typography>
+        {payStatus === '2' &&(
+          <>
+            <CircularProgress />
+            <br/>
+            <Typography component="h1" variant="h5">
+              Hold tight, your order is being processed. We will message or email you when your order succeeds.
+            </Typography>
+          </>
+        )}
+        {payStatus !== '2' &&(
+          <>
+            <StyledIcon />
+            <Typography component="h1" variant="h5">
+              {t('success-0')}
+            </Typography>
+            <Typography component="h1" variant="h5">
+              {t('success-1')}
+            </Typography>
+            <Typography variant="body1" align="center">
+              {t('admin-date') + ': ' + date}
+            </Typography>
+          </>
+        )}
+        {(role_optioin === '2' && wrongTestCount > 0) &&(
+          <Typography variant="body1" align="center">
+            {`Dear Customer, you have failed ${wrongTest} even after repeated tries. 
+            It is strongly recommended to go back and try to understand how to pass those tests. 
+            Repeating test on your appointment day could lead to increase costs for using up more office time. 
+            Thank you for your understanding`}
+          </Typography>
+        )} 
         <StyledButton variant="contained" color="primary" href="/">
-          Go to Home
+          {t('home')}
         </StyledButton>
       </StyledBox>
     </StyledContainer>

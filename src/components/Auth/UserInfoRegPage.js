@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { TextField, 
   Button, 
@@ -30,7 +31,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+  backgroundColor: 'rgba(255, 251, 240, 0.95)', // Semi-transparent background
   padding: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
 }));
@@ -48,6 +49,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const UserInfoRegPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const queryParams = new URLSearchParams(location.search);
   const phone = queryParams.get('phone');
@@ -63,7 +65,6 @@ const UserInfoRegPage = () => {
         lastname: data.get('lastName'),
         birthday: data.get('birthday'),
         personid: data.get('personId'),
-        email: data.get('email'),
         city: data.get('city'),
         streetname: data.get('streetName'),
         housenum: data.get('houseNum'),
@@ -81,11 +82,10 @@ const UserInfoRegPage = () => {
         localStorage.setItem('phone', phone);
         localStorage.setItem('role_option', role_option);
         localStorage.setItem('date', date);
-        navigate("/pay_stripe")
+        navigate("/pay_stripe");
       }
     } catch (err) {
       alert("Saved Failed");
-      console.log("error");
     }
   };
 
@@ -94,7 +94,7 @@ const UserInfoRegPage = () => {
       <CssBaseline />
       <StyledBox>
         <Typography component="h1" variant="h5">
-          Register Your Information
+          {t('regist-info')}
         </Typography>
         <StyledForm onSubmit={handleSubmit}>
           <div style={{display: 'flex', gap: '10px'}}>
@@ -104,7 +104,7 @@ const UserInfoRegPage = () => {
               required
               fullWidth
               id="firstName"
-              label="First Name"
+              label={t('admin-firstname')}
               name="firstName"
               inputProps={{
                 style: { height: 15  } 
@@ -117,7 +117,7 @@ const UserInfoRegPage = () => {
               required
               fullWidth
               id="lastName"
-              label="Last Name"
+              label={t('admin-lastname')}
               name="lastName"
               inputProps={{
                 style: { height: 15  } 
@@ -125,46 +125,32 @@ const UserInfoRegPage = () => {
               autoComplete="lastName"
             />
           </div>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="birthday"
-            type='date'
-            id="birthday"
-            inputProps={{
-              style: { height: 15  } 
-            }}
-            autoComplete="birthday"
-          />
           <div style={{display: 'flex', gap: '10px'}}>
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              name="personId"
-              label="Personal ID"
-              id="personId"
+              name="birthday"
+              type='date'
+              id="birthday"
               inputProps={{
                 style: { height: 15  } 
               }}
-              autoComplete="personId"
+              autoComplete="birthday"
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              name="email"
-              type='email'
-              label="Email"
-              id="email"
+              name="personId"
+              label={t('admin-person')}
+              id="personId"
               inputProps={{
                 style: { height: 15  } 
               }}
-              autoComplete="email"
+              autoComplete="personId"
             />
           </div>
           <div style={{display: 'flex', gap: '10px'}}>
@@ -174,7 +160,7 @@ const UserInfoRegPage = () => {
               required
               fullWidth
               name="city"
-              label="City"
+              label={t('admin-city')}
               id="city"
               inputProps={{
                 style: { height: 15  } 
@@ -187,7 +173,7 @@ const UserInfoRegPage = () => {
               required
               fullWidth
               name="streetName"
-              label="Street Name"
+              label={t('admin-street')}
               id="streetName"
               inputProps={{
                 style: { height: 15  } 
@@ -202,7 +188,7 @@ const UserInfoRegPage = () => {
               required
               fullWidth
               name="houseNum"
-              label="House Number"
+              label={t('admin-housenum')}
               id="houseNum"
               inputProps={{
                 style: { height: 15  } 
@@ -215,7 +201,7 @@ const UserInfoRegPage = () => {
               required
               fullWidth
               name="zipCode"
-              label="Zip Code"
+              label={t('admin-zip')}
               id="zipCode"
               inputProps={{
                 style: { height: 15  } 
@@ -229,7 +215,7 @@ const UserInfoRegPage = () => {
             variant="contained"
             color="primary"
           >
-            Submit
+            {t('submit')}
           </StyledButton>
         </StyledForm>
       </StyledBox>

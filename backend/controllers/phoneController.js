@@ -11,7 +11,7 @@ const registPhone = async (req, res) => {
         }else{
           const emailToken = jwt.sign({ role_option, date, phone }, process.env.JWT_SECRET, { expiresIn: '1d' });
           const url = `${process.env.REACT_APP_API_URL}/verify_phone?token=${emailToken}`;
-//          await send_verify_sms(phone, url);
+         await send_verify_sms(phone, url);
           res.status(200).send({data: 200});
           console.log(url);
         }
@@ -42,16 +42,11 @@ const signinPhone = async (req, res) => {
   try {
     const phone = req.body.formData.phone;
     const user_info = await getUser(phone);
-    const payload = {
-      role_option: user_info.role_option,
-      phone: phone,
-      date: user_info.appointmentdate
-    }
     if(user_info.firstname){
       if(user_info.paystatus === '1'){
-        user_info.role_option === '1'?res.status(201).send({data: payload}):res.status(200).send({data: payload});//paid
+        user_info.role_option === '1'?res.status(201).send({data: user_info}):res.status(200).send({data: user_info});//paid
       }else{
-        res.status(202).send({data: payload});//stripe
+        res.status(202).send({data: user_info});//stripe
       }
     }else{
       res.status(203).send('ok');//no account

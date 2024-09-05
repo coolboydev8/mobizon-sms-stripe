@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { Container, CssBaseline, Box, Typography, Button } from '@mui/material';
 import { styled } from '@mui/system';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -35,19 +37,21 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const OopsPage = () => {
+  const { t } = useTranslation();
+
   return (
     <StyledContainer component="main" maxWidth='disable'>
       <CssBaseline />
       <StyledBox>
         <StyledIcon />
         <Typography component="h1" variant="h5">
-          Oops!
+          {t('oops-0')}
         </Typography>
         <Typography variant="body1" align="center">
-          Something went wrong. Please try again.
+          {t('oops-1')}
         </Typography>
         <StyledButton variant="contained" color="primary" href="/">
-          Go to Home
+          {t('home')}
         </StyledButton>
       </StyledBox>
     </StyledContainer>

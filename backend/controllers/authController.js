@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { getPasswordHash, getAdminInfo, getAppointmentDate, updateDate, updatePhone, updatePassword, updateEmail, updatePrice } = require('../models/AuthModel');
+const { getPasswordHash, getAdminInfo, updatePassword, updatePrice_1, updatePrice_2 } = require('../models/AuthModel');
 
 exports.get_admin_info = async(req, res) => {
   try{
@@ -10,19 +10,9 @@ exports.get_admin_info = async(req, res) => {
   }
 }
 
-exports.get_appointment_date = async(req, res) => {
-  try{
-    const date = await getAppointmentDate();
-    res.status(200).json({ data: date });
-  }catch(err){
-    console.log(err);
-  }
-}
-
 exports.login = async(req, res) =>{
   const password = req.body.formData.password;
   const hash = await getPasswordHash();
-  
   try{
     if (await bcrypt.compare(password, hash)) {
       res.status(200).json({ data: 200 });
@@ -31,25 +21,10 @@ exports.login = async(req, res) =>{
     }  
   }catch(err){
     console.log(err);
+    res.status(201).json({ data: err });
   }
 }
 
-exports.changeDate = async(req, res) =>{
-  try{
-    await updateDate(req.body.adminDate);
-    res.status(200).json({ data: 200 });
-  }catch(err){
-    console.log(err);
-  }
-}
-exports.changePhone = async(req, res) =>{
-  try{
-    await updatePhone(req.body.adminPhone);
-    res.status(200).json({ data: 200 });
-  }catch(err){
-    console.log(err);
-  }
-}
 exports.changePassword = async(req, res) =>{
   try{
     await updatePassword(req.body.adminPassword);
@@ -58,17 +33,17 @@ exports.changePassword = async(req, res) =>{
     console.log(err);
   }
 }
-exports.changeEmail = async(req, res) =>{
+exports.changePrice_1 = async(req, res) =>{
   try{
-    await updateEmail(req.body.adminEmail);
+    await updatePrice_1(req.body.adminPrice_1);
     res.status(200).json({ data: 200 });
   }catch(err){
     console.log(err);
   }
 }
-exports.changePrice = async(req, res) =>{
+exports.changePrice_2 = async(req, res) =>{
   try{
-    await updatePrice(req.body.adminPrice);
+    await updatePrice_2(req.body.adminPrice_2);
     res.status(200).json({ data: 200 });
   }catch(err){
     console.log(err);

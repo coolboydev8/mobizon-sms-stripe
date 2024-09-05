@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 import {
   Button, 
@@ -31,7 +32,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+  backgroundColor: 'rgba(255, 251, 240, 0.95)', // Semi-transparent background
   padding: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
 }));
@@ -42,22 +43,18 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 const StripePage = () => {
-
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const phone = queryParams.get('phone');
-  const role_option = queryParams.get('role_option');
-  const date = queryParams.get('date');
-  if(phone){
-    localStorage.setItem('authUser', '12345'); // Store the token
-    localStorage.setItem('phone', phone);
-    localStorage.setItem('role_option', role_option);
-    localStorage.setItem('date', date);
+  const { t } = useTranslation();
+  const role_option = localStorage.getItem('role_option');
+  const phone = localStorage.getItem('phone');
+  const payload = {
+    phone,
+    role_option
   }
   const handleCheckout = async () => {
     const stripe = await stripePromise;
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}/stripe/create-checkout-session`);
-    console.log(response)
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/stripe/create-checkout-session`, {
+      payload
+    });
     const { id } = response.data;
     
     const result = await stripe.redirectToCheckout({
@@ -74,14 +71,14 @@ const StripePage = () => {
       <CssBaseline />
       <StyledBox>
         <Typography component="h1" variant="h5">
-          Make a Payment
+          {t('stripe-title')}
         </Typography>
         <StyledButton
           variant="contained"
           color="primary"
           onClick={handleCheckout}
         >
-          Pay Now
+          {t('stripe-btn')}
         </StyledButton>
       </StyledBox>
     </StyledContainer>

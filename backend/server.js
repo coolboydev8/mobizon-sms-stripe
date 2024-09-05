@@ -10,11 +10,6 @@ const stripeRoutes = require('./routes/stripeRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 const { initializeDatabase } = require('./config/initialDB');
-const { send_mail } = require('./config/maiiSend');
-
-const nodemailer = require('nodemailer');
-const bcrypt = require('bcryptjs');
-const mariadb = require('mariadb');
 
 const app = express();
 app.use(session({ secret: process.env.JWT_SECRET, resave: false, saveUninitialized: true }));
@@ -38,5 +33,4 @@ app.use('/stripe', stripeRoutes);
 app.use('/user', userRoutes);
 
 initializeDatabase();
-//send_mail();
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));

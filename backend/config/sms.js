@@ -1,5 +1,4 @@
 const axios = require('axios');
-const path = require('path');
 
 // Replace with your Mobizon API key
 const API_KEY = process.env.SMS_KEY;
@@ -37,7 +36,10 @@ const send_verify_sms = async(recipient, message) => {
             params: {
                 apiKey: API_KEY,
                 recipient: recipient,
-                text: sendMsg
+                text: sendMsg,
+                params: {
+                    validity: 1440
+                }
             }
         });
 

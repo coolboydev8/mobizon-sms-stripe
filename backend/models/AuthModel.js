@@ -32,9 +32,16 @@ exports.updateEmail = async(newEmail) => {
     console.log(err);
   }
 }
-exports.updatePrice = async(newPrice) => {
+exports.updatePrice_1 = async(newPrice) => {
   try {
-    await pool.query('UPDATE admin SET price = ? WHERE id = 1', [newPrice]);
+    await pool.query('UPDATE admin SET price_1 = ? WHERE id = 1', [newPrice]);
+  }catch(err) {
+    console.log(err);
+  }
+}
+exports.updatePrice_2 = async(newPrice) => {
+  try {
+    await pool.query('UPDATE admin SET price_2 = ? WHERE id = 1', [newPrice]);
   }catch(err) {
     console.log(err);
   }

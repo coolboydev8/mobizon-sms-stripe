@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { useTranslation } from 'react-i18next';
 import { TextField, 
   Button, 
   Box, 
@@ -17,6 +17,8 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -36,7 +38,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+  backgroundColor: 'rgba(255, 251, 240, 0.95)', // Semi-transparent background
   padding: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
 }));
@@ -52,7 +54,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const FirstPage = () => {
   const [btnClicked, setBtnClicked] = useState(false);
+  const [phone, setPhone] = useState('');
 
+  const { t } = useTranslation();
   const handleSubmit = async(event) => {
     event.preventDefault();
     setBtnClicked(true);
@@ -60,7 +64,7 @@ const FirstPage = () => {
     const formData = {
       role_option: data.get('role_option'),
       date: data.get('date'),
-      phone: data.get('phone'),
+      phone: phone,
     };
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/register_phone`, {
@@ -79,7 +83,7 @@ const FirstPage = () => {
       <CssBaseline />
       <StyledBox>
         <Typography component="h1" variant="h5">
-          Welcome
+          {t('welcome')}
         </Typography>
         <StyledForm onSubmit={handleSubmit}>
           <RadioGroup
@@ -89,9 +93,9 @@ const FirstPage = () => {
             defaultValue="1"
             id="role_option"
           >
-            <FormControlLabel value="1" control={<Radio />} label="Option 1" />
+            <FormControlLabel value="1" control={<Radio />} label={t('admin-option') + ' 1'} />
             <FormControlLabel sx={{visibility: 'hidden'}} control={<Radio />} />
-            <FormControlLabel value="2" control={<Radio />} label="Option 2" />
+            <FormControlLabel value="2" control={<Radio />} label={t('admin-option') + ' 2'} />
           </RadioGroup>
           <LocalizationProvider required dateAdapter={AdapterDayjs} >
             <DemoContainer required components={['DateTimePicker']} sx={{marginBottom: '8px', marginTop:'8px'}}>
@@ -99,22 +103,26 @@ const FirstPage = () => {
                 required
                 id='date'
                 name='date'
-                label='Appointment Date' 
+                label={t('admin-date')}
+                ampm={false}
               />
             </DemoContainer>
           </LocalizationProvider>
-
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="phone"
-            label="12345678901"
-            type="number"
+          <PhoneInput
             id="phone"
-            autoComplete="current-phone"
+            value={phone}
+            onChange={(phone) => setPhone(phone)}
+            copyNumbersOnly 
+            inputProps={{
+              name: 'phone',
+              required: true,
+              autoFocus: true,
+              height: '50px'
+            }}
+            containerStyle={{height: '50px', background: 'none'}}
+            inputStyle={{height: '50px', background: 'none'}} 
           />
+
           <StyledButton
             type="submit"
             fullWidth
@@ -122,7 +130,7 @@ const FirstPage = () => {
             color="primary"
             disabled={btnClicked}
           >
-            Submit
+            {t('submit')}
           </StyledButton>
         </StyledForm>
       </StyledBox>

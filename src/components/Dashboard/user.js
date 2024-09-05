@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 import { TextField, 
   Button, 
   Box, 
   Typography, 
   Container,
-  CssBaseline
+  CssBaseline, 
 } from '@mui/material';
 import { styled } from '@mui/system';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -29,7 +31,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+  backgroundColor: 'rgba(255, 251, 240, 0.95)', // Semi-transparent background
   padding: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
 }));
@@ -44,38 +46,41 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const UserPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const [phone, setPhone] = useState('');
   const handleSubmit = async(event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
     const formData = {
-      phone: data.get('phone')
+      phone: phone
     };
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/signin_phone`, {
         formData
       });
-      console.log(response);
-      if(response.status === 200){
+      if(response.status === 201){
         localStorage.setItem('authUser', '12345'); // Store the token
         localStorage.setItem('phone', response.data.data.phone);
         localStorage.setItem('role_option', response.data.data.role_option);
-        localStorage.setItem('date', response.data.data.role_option);
-        navigate("/playgame");
-      }else if(response.status === 201){
-        localStorage.setItem('authUser', '12345'); // Store the token
-        localStorage.setItem('phone', response.data.data.phone);
-        localStorage.setItem('role_option', response.data.data.role_option);
-        localStorage.setItem('date', response.data.data.role_option);
-        navigate("/success");
+        localStorage.setItem('date', response.data.data.appointmentdate);
+        navigate(`/success`);
       }else if(response.status === 202){
         localStorage.setItem('authUser', '12345'); // Store the token
         localStorage.setItem('phone', response.data.data.phone);
         localStorage.setItem('role_option', response.data.data.role_option);
-        localStorage.setItem('date', response.data.data.role_option);
+        localStorage.setItem('date', response.data.data.appointmentdate);
+        navigate(`/check_game`);
+      }else if(response.status === 203){
+        localStorage.setItem('authUser', '12345'); // Store the token
+        navigate("/success");
+      }else if(response.status === 200){
+        console.log(response.data.data)
+        localStorage.setItem('authUser', '12345'); // Store the token
+        localStorage.setItem('phone', response.data.data.phone);
+        localStorage.setItem('role_option', response.data.data.role_option);
+        localStorage.setItem('date', response.data.data.appointmentdate);
         navigate("/pay_stripe");
-      }else if(response.status === 203 || response.status === 500){
+      }else if(response.status === 205 || response.status === 500){
         navigate("/oops");
       }
     } catch (err) {
@@ -88,19 +93,22 @@ const UserPage = () => {
       <CssBaseline />
       <StyledBox>
         <Typography component="h1" variant="h5">
-          Welcome
+          {t('welcome')}
         </Typography>
         <StyledForm onSubmit={handleSubmit}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="phone"
-            label="12345678901"
-            type="number"
+          <PhoneInput
             id="phone"
-            autoComplete="current-phone"
+            value={phone}
+            onChange={(phone) => setPhone(phone)}
+            copyNumbersOnly 
+            inputProps={{
+              name: 'phone',
+              required: true,
+              autoFocus: true,
+              height: '50px'
+            }}
+            containerStyle={{height: '50px', background: 'none'}}
+            inputStyle={{height: '50px', background: 'none'}} 
           />
           <StyledButton
             type="submit"
@@ -108,7 +116,7 @@ const UserPage = () => {
             variant="contained"
             color="primary"
           >
-            Submit
+            {t('submit')}
           </StyledButton>
         </StyledForm>
       </StyledBox>

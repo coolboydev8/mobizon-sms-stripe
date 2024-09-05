@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { TextField, 
   Button, 
@@ -29,7 +30,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+  backgroundColor: 'rgba(255, 251, 240, 0.95)', // Semi-transparent background
   padding: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
 }));
@@ -44,6 +45,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const SignInPage = () => {
+  const { t } = useTranslation();
   const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -59,10 +61,10 @@ const SignInPage = () => {
         localStorage.setItem('authToken', '12345'); // Store the token
         window.location.href = '/admin_page'; // Redirect on successful login
       }else{
-//        window.location.href = '/oops';
+       window.location.href = '/oops';
       }
     } catch (err) {
-  //    window.location.href = '/oops';
+      window.location.href = '/oops';
       console.log(err);
     }
   };
@@ -72,7 +74,7 @@ const SignInPage = () => {
       <CssBaseline />
       <StyledBox>
         <Typography component="h1" variant="h5">
-          Welcome to Admin
+          {t('welcome-admin')}
         </Typography>
         <StyledForm onSubmit={handleSubmit}>
           <TextField
@@ -81,7 +83,7 @@ const SignInPage = () => {
             required
             fullWidth
             name="password"
-            label="Password"
+            label={t('admin-password')}
             type="password"
             id="password"
             autoComplete="password"
@@ -92,7 +94,7 @@ const SignInPage = () => {
             variant="contained"
             color="primary"
           >
-            Sign In
+            {t('sign-admin')}
           </StyledButton>
         </StyledForm>
       </StyledBox>

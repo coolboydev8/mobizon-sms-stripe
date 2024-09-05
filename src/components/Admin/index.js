@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import axios from 'axios';
 
 import PropTypes from 'prop-types';
@@ -74,100 +76,103 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const headCells = [
-  {    
-    id: 'option',
-    numeric: true,
-    disablePadding: false,
-    label: 'Option',
-  },
-  {    
-    id: 'appointmentdate',
-    numeric: true,
-    disablePadding: false,
-    label: 'appointmentdate',
-  },
-  {    
-    id: 'phone',
-    numeric: true,
-    disablePadding: false,
-    label: 'phone',
-  },
-  {    
-    id: 'firstname',
-    numeric: true,
-    disablePadding: false,
-    label: 'firstname',
-  },
-  {    
-    id: 'lastname',
-    numeric: true,
-    disablePadding: false,
-    label: 'lastname',
-  },
-  {    
-    id: 'birthday',
-    numeric: true,
-    disablePadding: false,
-    label: 'birthday',
-  },
-  {    
-    id: 'personid',
-    numeric: true,
-    disablePadding: false,
-    label: 'personid',
-  },
-  {    
-    id: 'email',
-    numeric: true,
-    disablePadding: false,
-    label: 'email',
-  },
-  {    
-    id: 'city',
-    numeric: true,
-    disablePadding: false,
-    label: 'city',
-  },
-  {    
-    id: 'street',
-    numeric: true,
-    disablePadding: false,
-    label: 'street',
-  },
-  {    
-    id: 'housenum',
-    numeric: true,
-    disablePadding: false,
-    label: 'housenum',
-  },
-  {    
-    id: 'code',
-    numeric: true,
-    disablePadding: false,
-    label: 'code',
-  },
-  {    
-    id: 'gamestatus',
-    numeric: true,
-    disablePadding: false,
-    label: 'gamestatus',
-  },
-  {    
-    id: 'paystatus',
-    numeric: true,
-    disablePadding: false,
-    label: 'paystatus',
-  },
-  {    
-    id: 'action',
-    numeric: true,
-    disablePadding: false,
-    label: 'Action',
-  },
-];
 
 const EnhancedTableHead = (props) => {
+  const { t } = useTranslation();
+
+  const headCells = [
+    {    
+      id: 'option',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-option'),
+    },
+    {    
+      id: 'appointmentdate',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-date'),
+    },
+    {    
+      id: 'phone',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-phone'),
+    },
+    {    
+      id: 'firstname',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-firstname'),
+    },
+    {    
+      id: 'lastname',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-lastname'),
+    },
+    {    
+      id: 'birthday',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-birth'),
+    },
+    {    
+      id: 'personid',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-person'),
+    },
+    {    
+      id: 'email',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-email'),
+    },
+    {    
+      id: 'city',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-city'),
+    },
+    {    
+      id: 'street',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-street'),
+    },
+    {    
+      id: 'housenum',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-housenum'),
+    },
+    {    
+      id: 'code',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-zip'),
+    },
+    {    
+      id: 'gamestatus',
+      numeric: true,
+      disablePadding: false,
+      label: t('admin-gamestatus'),
+    },
+    {    
+      id: 'paystatus',
+      numeric: true,
+      disablePadding: false,
+      label: 'admin-paystatus',
+    },
+    {    
+      id: 'action',
+      numeric: true,
+      disablePadding: false,
+      label: 'admin-action',
+    },
+  ];
+  
   return (
     <TableHead>
       <StyledTableRow>
@@ -190,6 +195,8 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTable = () => {
+  const { t } = useTranslation();
+
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
   const [page, setPage] = useState(0);
@@ -199,8 +206,8 @@ const EnhancedTable = () => {
   const [filterKey, setFiliterKey] = useState('');
   const [userData, setUserData] = useState([]);
   const [adminPassword, setAdminPassword] = useState('');
-  const [adminEmail, setAdminEmail] = useState('');
-  const [adminPrice, setAdminPrice] = useState(0);
+  const [adminPrice_1, setAdminPrice_1] = useState(0);
+  const [adminPrice_2, setAdminPrice_2] = useState(0);
   const [removeId, setRemoveId] = useState(0);
   const [openDlg, setOpenDlg] = useState(false);
 
@@ -220,7 +227,7 @@ const EnhancedTable = () => {
         if(admin_info.status === 200){
           setAdminData(admin_info.data.data[0]);
         }else{
-          alert("Error!");
+          alert(t('admin-error'));
         }
       } catch (err) {
         console.log(err);
@@ -243,7 +250,7 @@ const EnhancedTable = () => {
         setOpenDlg(false);
         setUserData(user_info.data.data);
       }else{
-        alert("Error!");
+        alert(t('admin-error'));
       }
     } catch (err) {
       alert(err);
@@ -256,37 +263,38 @@ const EnhancedTable = () => {
         adminPassword
       });
       if(response.status === 200){
-        alert("Your password has been successfully changed.!");
+        alert(t('admin-passchanged'));
       }else{
-        alert("Error!");
+        alert(t('admin-error'));
       }
     } catch (err) {
       alert(err);
     }
   }
-  const changeEmail = async() => {
+  const changePrice_1 = async() => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/admin/change_email`, {  
-        adminEmail
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/admin/change_price_1`, {  
+        adminPrice_1
       });
       if(response.status === 200){
-        alert("Your email has been successfully changed.!");
+        alert(t('admin-pricechagned1'));
       }else{
-        alert("Error!");
+        alert(t('admin-error'));
       }
     } catch (err) {
       alert(err);
     }
   }
-  const changePrice = async() => {
+
+  const changePrice_2 = async() => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/admin/change_price`, {  
-        adminPrice
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/admin/change_price_2`, {  
+        adminPrice_2
       });
       if(response.status === 200){
-        alert("Your price has been successfully changed.!");
+        alert(t('admin-pricechagned2'));
       }else{
-        alert("Error!");
+        alert(t('admin-error'));
       }
     } catch (err) {
       alert(err);
@@ -346,11 +354,11 @@ const EnhancedTable = () => {
       <Box sx={{ flexGrow: 1, margin: '30px 15px 15px 15px'}}>
       <Paper sx={{padding: '15px 15px 15px 15px'}}>
         <Typography component="h1" variant="h5" align='left' marginBottom={'5px'}>
-          Set Up Admin Information
+          {t('admin-header')}
         </Typography>
         <Divider sx={{marginBottom: '25px'}}></Divider>
         <Grid container rowSpacing={{ xs: 1, sm: 2, md: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid xs={6}>
+          <Grid xs={4}>
             <Item>          
             <TextField
                 variant="outlined"
@@ -358,7 +366,7 @@ const EnhancedTable = () => {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label={t('admin-password')}
                 type="password"
                 id="password"
                 autoComplete="password"
@@ -371,57 +379,57 @@ const EnhancedTable = () => {
                 color="primary"
                 onClick={() => {changePassword();}}
               >
-                Set
+                {t('admin-set')}
               </Button>
             </Item>
           </Grid>
-          <Grid xs={6}>
+          <Grid xs={4}>
             <Item>          
             <TextField
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="email"
-                label={'Email: ' + adminData.email}
-                defaultValue={adminData.email}
-                type="email"
-                id="email"
-                autoComplete="email"
-                onChange={(e) => {setAdminEmail(e.target.value);}}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={() => {changeEmail();}}
-              >
-                Set
-              </Button>
-            </Item>
-          </Grid>
-          <Grid xs={6}>
-            <Item>          
-            <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="price"
-                label={'Price: ' + adminData.price}
-                defaultValue={adminData.price}
+                name="price_1"
+                label={t('admin-price1') + adminData.price_1}
+                defaultValue={adminData.price_1}
                 type="number"
-                id="price"
-                autoComplete="Price"
-                onChange={(e) => {setAdminPrice(e.target.value);}}
+                id="price_1"
+                autoComplete="Price of Option 1"
+                onChange={(e) => {setAdminPrice_1(e.target.value);}}
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
-                onClick={() => {changePrice();}}
+                onClick={() => {changePrice_1();}}
               >
-                Set
+                {t('admin-set')}
+              </Button>
+            </Item>
+          </Grid>
+          <Grid xs={4}>
+            <Item>          
+            <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="price_2"
+                label={t('admin-price2') + adminData.price_2}
+                defaultValue={adminData.price_2}
+                type="number"
+                id="price_2"
+                autoComplete="Price of Option 2"
+                onChange={(e) => {setAdminPrice_2(e.target.value);}}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={() => {changePrice_2();}}
+              >
+                {t('admin-set')}
               </Button>
             </Item>
           </Grid>
@@ -441,11 +449,11 @@ const EnhancedTable = () => {
               id="tableTitle"
               component="div"
             >
-              List of Users
+              {t('admin-list')}
             </Typography>
             <StyledTextField
               variant="outlined"
-              placeholder="Search..."
+              placeholder={t('admin-search')}
               onKeyDown={(e) => serachUser(e)}
             />      
           </Toolbar>
@@ -545,11 +553,11 @@ const EnhancedTable = () => {
         onClose={() => setOpenDlg(false)}
       >
         <DialogTitle id="remove-dlg">
-          {"Would you like to remove this user from your database?"}
+          {t('admin-remove')}
         </DialogTitle>
         <DialogActions>
-          <Button onClick={() => setOpenDlg(false)}>No</Button>
-          <Button onClick={() => removeRow(removeId)}>Yes</Button>
+          <Button onClick={() => setOpenDlg(false)}>{t('admin-no')}</Button>
+          <Button onClick={() => removeRow(removeId)}>{t('admin-yes')}</Button>
         </DialogActions>
       </Dialog>
     </div>

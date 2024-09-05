@@ -1,10 +1,17 @@
-import React, { useEffect } from 'react';
-import {CardItem, CardItem4, CardDoubleItem} from '../CardItem';
+import React from 'react';
+import { CardItem4, CardDoubleItem} from '../CardItem';
 
 const Gameresult = ({ step, direct, dirStatTop, dirStatBottom}) => {
+  const dirList = [];
+  if(step === 10){
+    for (let i = 0; i < direct.length; i += 5) {
+      const tmp = direct.slice(i, i + 5);
+      dirList.push(tmp);
+    }
+  }
   return (
     <div>
-      {(step === 2 || step == 10) &&(
+      {step === 2 &&(
         <div className="res-grid-container">
         <div className="grid-item button-explanation">
           <img src='btn/down.png' width={24} height={24}></img>
@@ -32,7 +39,6 @@ const Gameresult = ({ step, direct, dirStatTop, dirStatBottom}) => {
           </div>          
           )
         ))}
-
         </div>
       )}
 
@@ -279,8 +285,116 @@ const Gameresult = ({ step, direct, dirStatTop, dirStatBottom}) => {
           <div className="grid-item" ></div>
         </div>
       )} 
+      {step === 10 &&(
+        <div className="res2-grid-container">
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        {dirList[0].map((item, index) => (
+          item === 'down'? (
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
+              <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
+            </div>          
+          ):(
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
+            <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
+          </div>          
+          )
+        ))}
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        {dirList[1].map((item, index) => (
+          item === 'down'? (
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
+              <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
+            </div>          
+          ):(
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
+            <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
+          </div>          
+          )
+        ))}
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        {dirList[2].map((item, index) => (
+          item === 'down'? (
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
+              <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
+            </div>          
+          ):(
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
+            <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
+          </div>          
+          )
+        ))}
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        <div className="grid-item button-explanation">
+          <img src='btn/down.png' width={24} height={24}></img>
+        </div>
+        {dirList[3].map((item, index) => (
+          item === 'down'? (
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: 'rgb(117, 201, 117)', height: '24px', padding: '3px', border: 0}}>
+              <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
+            </div>          
+          ):(
+            <div key={index} className="grid-item button-explanation" style={{backgroundColor: '#fb544e', height: '24px', padding: '3px', border: 0}}>
+            <img src={`btn_res/${item}_res.png`} width={24} height={24}></img>
+          </div>          
+          )
+        ))}
 
-      </div>
+        </div>
+      )}
+    </div>
 )}
 
 

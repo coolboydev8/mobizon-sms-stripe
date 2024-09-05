@@ -6,9 +6,9 @@ exports.initializeDatabase = async(req, res) => {
     await pool.query(`CREATE TABLE IF NOT EXISTS admin (
       id INT AUTO_INCREMENT PRIMARY KEY,
       password VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL,
-      price INT NOT NULL
-    )`);
+      price_1 INT NOT NULL,
+      price_2 INT NOT NULL
+      )`);
     await pool.query(`CREATE TABLE IF NOT EXISTS user (
       user_id INT AUTO_INCREMENT PRIMARY KEY,
       role_option VARCHAR(255) NOT NULL,
@@ -30,7 +30,7 @@ exports.initializeDatabase = async(req, res) => {
     const hashedPassword = await bcrypt.hash('123', 10);
     const results = await pool.query('SELECT COUNT(*) AS count FROM admin');
     if(results[0][0].count === 0){
-      await pool.query('INSERT INTO admin (password, email, price) VALUES (?, ?, ?)', [hashedPassword, 'example@example.com', 10]);
+      await pool.query('INSERT INTO admin (password, price_1, price_2) VALUES (?, ?, ?)', [hashedPassword, 10, 10]);
     }
     console.log("Successed!");
   } catch (err){

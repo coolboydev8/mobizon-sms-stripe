@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import axios from 'axios';
 
 import Gameresult from './Gameresult';
 
-const FirstTest = ({ step, onNext, onPrevious }) => {
+const FifthTest = ({ step, onNext, onPrevious }) => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   // Create refs for each button
   const leftButtonRef = useRef(null);
@@ -13,15 +15,19 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
   const rightButtonRef = useRef(null);
   const downButtonRef = useRef(null);
   const [active, setActive] = useState({ left: false, up: false, right: false, down: false });
+
   const [imageVisible, setImageVisible] = useState(false);
   const [reactionTimeStatus, setReactionTimeStatus] = useState(false);
   const [directionData, setDirectionData] = useState([]);
   const [directionStauts, setDirectionStatus] = useState(false);
   const [testCount, setTestCount] = useState(0);
+  const startTimeRef = useRef(null);
   const [retryTimes, setRetryTimes] = useState(0);
   const [retryTimesImgVisible, setRetryTimesImgVisible] = useState(false);
-  const startTimeRef = useRef(null);
+
   const phone = localStorage.getItem('phone');
+  const role_option = localStorage.getItem('role_option');
+  const date = localStorage.getItem('date');
   const payload_step = step / 2;
 
   useEffect(() => {
@@ -74,7 +80,7 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
         }, 150); // Duration to show the effect, adjust as needed
       }
     };
-    if (testCount < 6) {
+    if (testCount < 21) {
       window.addEventListener('keydown', handleKeyDown);
       interval = setInterval(() => {
         setImageVisible(true);
@@ -83,7 +89,7 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
           setImageVisible(false);
         }, 700); // Image is visible for 500ms
         setTestCount(testCount + 1);  
-      }, 1000 * (Math.random() + 1)); // Image is displayed every 1 second
+      }, 2000 * (Math.random() + 1)); // Image is displayed every 1 second
     } else {
       clearInterval(interval);
     }
@@ -92,7 +98,6 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
       clearInterval(interval);
       window.removeEventListener('keydown', handleKeyDown);
     };
-
   }, [testCount]);
 
   const handleClick = (direction) => {
@@ -118,20 +123,36 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
   };
 
   const handleOk = async() => {
-    onNext();
     let report = 'success';
     const payload = {
       phone,
       report,
       payload_step
     }
-    try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
-        payload
-      });
-    } catch (err) {
-      console.log("error");
+    const payload_confirm = {
+      phone,
+      role_option,
+      date
     }
+    try {
+        await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
+            payload
+        });
+        const paystatus = await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
+          payload
+        });
+        if(paystatus === '1'){
+          await axios.post(`${process.env.REACT_APP_API_URL}/user/confirm_appointment`, {
+            payload_confirm
+          });
+          navigate('/success');
+        }else{
+          alert(`You didn't pay!`);
+          navigate('/oops');
+        }
+    } catch (err) {
+      navigate('/oops');
+    }  
   }
   const handleRetry = async() => {
     onPrevious();    
@@ -142,31 +163,36 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
       payload_step
     }
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
         payload
       });
-      if(response.status === 200){
-        setRetryTimes(retryTimes + 1);
-      }
     } catch (err) {
       console.log("error");
     }
   }
   const handleIgnore = async() => {
-    onNext();
     let report = 'ignore';
     const payload = {
       phone,
       report,
       payload_step
     }
+    const payload_confirm = {
+      phone,
+      role_option,
+      date
+    }
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
-        payload
-      });
+        await axios.post(`${process.env.REACT_APP_API_URL}/user/update_game_status`, {
+            payload
+        });    
+        await axios.post(`${process.env.REACT_APP_API_URL}/user/confirm_appointment`, {
+            payload_confirm
+        });
+        navigate('/success');
     } catch (err) {
-        console.log("error");
-    }    
+        navigate('/oops');
+    }  
   }
 
   return (
@@ -174,9 +200,10 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
       { retryTimesImgVisible === true &&( 
         <div className='wrong-click'>Wrong</div>
       )}
-        {testCount === 6 &&(
+
+      {testCount === 21 &&(
         <div style={{height:'100vh' }}>
-          {directionData.length === 5 && (
+          {directionData.length === 20 && (
             <Gameresult  step={step} direct={directionData} />
           )}
           {reactionTimeStatus === true && (
@@ -185,16 +212,16 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
           {directionStauts === true && (
               <p className='p-game-result'>{t('game-failed-click')}</p>
           )}
-          {directionData.length !== 5 && (
+          {directionData.length !== 20 && (
               <p className='p-game-result'>{t('game-failed-always')}</p>
           )}
-          {(reactionTimeStatus === true || directionStauts === true || directionData.length !== 5) && (
+          {(reactionTimeStatus === true || directionStauts === true || directionData.length !== 20) && (
             <div style={{display: 'flex', gap: 10, justifyContent: 'center', alignItems:'center'}}>
               <button style={{width: '100px', height: '35px', cursor: 'pointer'}} onClick={() => handleRetry()}>{t('game-retry')}</button>
-              {retryTimes > 3?<button style={{width: '100px', height: '35px', cursor: 'pointer'}} onClick={() => handleIgnore()}>{t('game-ignore')}</button>:<></>}
+              <button style={{width: '100px', height: '35px', cursor: 'pointer'}} onClick={() => handleIgnore()}>{t('game-ignore')}</button>
             </div>
           )}          
-          {reactionTimeStatus === false && directionStauts === false && directionData.length === 5 && (
+          {reactionTimeStatus === false && directionStauts === false && directionData.length === 20 && (
             <div>
               <p  className='p-game-result'>{t('game-good')}</p>
               <div style={{display: 'flex', gap: 10, justifyContent: 'center', alignItems:'center'}}>          
@@ -204,7 +231,7 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
           )}
         </div>
       )}
-      {testCount !== 6 &&(
+      {testCount !== 21 &&(
         <div className="container">
         <div className="test-leftPane">
             {imageVisible &&<div className="button-explanation">
@@ -238,4 +265,4 @@ const FirstTest = ({ step, onNext, onPrevious }) => {
   );
 };
 
-export default FirstTest;
+export default FifthTest;

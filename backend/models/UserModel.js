@@ -57,20 +57,31 @@ exports.registUser = async(userData) => {
 }
 
 exports.updateUser = async(userData) => {
-  const {firstname, lastname, birthday, personid, email, city, streetname, housenum, code} = userData.info;
+  const {firstname, lastname, birthday, personid, city, streetname, housenum, code} = userData.info;
   try {
     const rows = await pool.query(`SELECT COUNT(*) AS count FROM user WHERE phone = ${userData.phone}`);
     if(rows[0][0].count === 1){
-      const result = await pool.query("UPDATE user SET firstname = ?, lastname = ?, birthday = ?, personid = ?, email = ?, city = ?, street = ?, housenum = ?, code = ? WHERE phone = ?", [firstname, lastname, birthday, personid, email, city, streetname, housenum, code, userData.phone]);
-        return 1;
+      await pool.query("UPDATE user SET firstname = ?, lastname = ?, birthday = ?, personid = ?, city = ?, street = ?, housenum = ?, code = ? WHERE phone = ?", [firstname, lastname, birthday, personid, city, streetname, housenum, code, userData.phone]);
+      return 1;
     }else{
-        return 0;
-   }
+      return 0;
+    }
   }catch(err) {
     console.log(err);
     return 0;
   }
 }
+
+exports.updateUserEmail = async(customer_email, phone) => {
+  try {
+    await pool.query("UPDATE user SET email = ? WHERE phone = ?", [customer_email, phone]);
+    return 1;
+  }catch(err) {
+    console.log(err);
+    return 0;
+  }
+}
+
 exports.updatePayStatus = async(phone) => {
   try {
     await pool.query("UPDATE user SET paystatus = ? WHERE phone = ?", ['1', phone]);
