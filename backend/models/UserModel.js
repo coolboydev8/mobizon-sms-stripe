@@ -18,6 +18,16 @@ exports.getUser = async(phone) => {
   }
 }
 
+exports.getUserPhoneById = async(row) => {
+  try {
+    const rows = await pool.query(`SELECT * FROM user WHERE user_id = ${row}`);
+    console.log(rows[0][0].phone);
+    return rows[0][0].phone;
+  }catch(err) {
+    console.log(err);
+  }
+}
+
 exports.removeUserDB = async(row) => {
   try {
     await pool.query(`DELETE FROM user WHERE user_id = ${row}`);
@@ -72,6 +82,17 @@ exports.updateUser = async(userData) => {
   }
 }
 
+exports.updateUserDate = async(phone, date) => {
+  try {
+    await pool.query("UPDATE user SET appointmentdate = ? WHERE phone = ?", [date, phone]);
+    return 1;
+  }catch(err) {
+    console.log(err);
+    return 0;
+  }
+}
+
+
 exports.updateUserEmail = async(customer_email, phone) => {
   try {
     await pool.query("UPDATE user SET email = ? WHERE phone = ?", [customer_email, phone]);
@@ -82,9 +103,9 @@ exports.updateUserEmail = async(customer_email, phone) => {
   }
 }
 
-exports.updatePayStatus = async(phone) => {
+exports.updatePayStatus = async(phone, status) => {
   try {
-    await pool.query("UPDATE user SET paystatus = ? WHERE phone = ?", ['1', phone]);
+    await pool.query("UPDATE user SET paystatus = ? WHERE phone = ?", [status, phone]);
     return 1;
   }catch(err) {
     console.log(err);

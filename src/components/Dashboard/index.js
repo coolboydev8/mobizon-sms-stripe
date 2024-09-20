@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { TextField, 
+import { 
   Button, 
   Box, 
   Typography, 
@@ -9,7 +9,7 @@ import { TextField,
   FormControlLabel,
   Radio,
   Container,
-  CssBaseline
+  CssBaseline,
 } from '@mui/material';
 import { styled } from '@mui/system';
 
@@ -55,7 +55,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const FirstPage = () => {
   const [btnClicked, setBtnClicked] = useState(false);
   const [phone, setPhone] = useState('');
-
   const { t } = useTranslation();
   const handleSubmit = async(event) => {
     event.preventDefault();
@@ -70,7 +69,7 @@ const FirstPage = () => {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/register_phone`, {
         formData
       });
-      if(response.status === 203){
+      if(response.status === 202 || response.status === 203){
         alert(response.data.data);
       }
     } catch (err) {
@@ -120,7 +119,7 @@ const FirstPage = () => {
               height: '50px'
             }}
             containerStyle={{height: '50px', background: 'none'}}
-            inputStyle={{height: '50px', background: 'none'}} 
+            inputStyle={{height: '50px', background: 'none', width: '100%'}} 
           />
 
           <StyledButton

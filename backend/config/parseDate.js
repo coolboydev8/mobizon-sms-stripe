@@ -9,7 +9,7 @@ const parseDateString = (dateString) => {
     const [hours, minutes] = timePart.split(':').map(Number);
   
     // Construct a Date object
-    return new Date(year, month - 1, day, hours, minutes);
+    return new Date(year, month - 1, day, hours + 2, minutes);
 };
   
 module.exports = { parseDateString };

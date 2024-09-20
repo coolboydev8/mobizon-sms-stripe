@@ -1,18 +1,21 @@
 const schedule = require('node-schedule');
-const { send_check_option } = require('../config/sms');
+
 const { updatePayStatus, updateUserEmail, getUser } = require('../models/UserModel');
 const { getAdminInfo } = require('../models/AuthModel');
-const { send_Email } = require('../config/maiiSend');
+const { insertUserReminder } = require('../models/ReserveModel');
 const { parseDateString } = require('../config/parseDate');
+const { notificationQueue } = require('../config/queue');
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const createCheckout = async (req, res) => {
-  const option  = req.body.role_option;
-  const response = await getAdminInfo();
-  const price = option === '1'?response[0].price_1: response[0].price_2; 
-  const product_name = option === '1'? 'appointment': 'appointment2';
+  const role_option = req.body.payload.role_option;
+  const phone = req.body.payload.phone;
+  const date = req.body.payload.date;
+  const product_name = role_option === '1'? 'appointment': 'appointment2';
   try {
+    const response = await getAdminInfo();
+    const price = role_option === '1'?response[0].price_1: response[0].price_2;   
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'sofort', 'paypal', 'klarna'],
       line_items: [
@@ -30,6 +33,16 @@ const createCheckout = async (req, res) => {
       mode: 'payment',
       success_url: `${process.env.FRONTEND_API_URL}/stripe_success?session_id={CHECKOUT_SESSION_ID}`, 
       cancel_url: `${process.env.FRONTEND_API_URL}/oops`,
+      metadata: {
+        phone: phone
+      },  
+      payment_intent_data: {
+        metadata: {
+          phone: phone,
+          date: date,
+          role_option: role_option
+        }  
+      }
     });
     res.json({ id: session.id });
   } catch (error) {
@@ -39,65 +52,123 @@ const createCheckout = async (req, res) => {
 
 const checkoutPay = async (req, res) => {
   const sessionId = req.body.payload.session_id;
-  const date = req.body.payload.date;
-  const role_option = req.body.payload.role_option;
   const phone = req.body.payload.phone;
   try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
     const user = await getUser(phone);
-    if(user.paystatus === '1'){
-      res.status(202).json({data: 'You have already paid'});
+    if(user.paystatus === '0'){
+      res.status(200).json({data: session});
+    }else if(user.paystatus === '1'){
+      res.status(201).json({data: session});
     }else{
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      let customer_email = session.customer_details.email;
-      let user_firstname = user.firstname;
-      let text_msg = `${user_firstname}'s reservation has been confirmed.\nOption: ${role_option}\nAppointment Date: ${date}\nPhone Number: ${phone} `;
-      let html_msg = `<b>${user_firstname}'s reservation has been confirmed.</b><br/>
-      <p>Option: ${role_option}<br/><br/>Appointment Date: ${date}<br/><br/>Phone Number: ${phone}
-      </p>`    
-  
-      await updateUserEmail(customer_email, phone);
-      if (session.payment_status === 'paid') {
-        await updatePayStatus(phone);
-        if(role_option === '1'){
-          const mailOptions_admin = {
-            from: process.env.SMTP_USER,  // Sender address
-            to: `${process.env.SMTP_USER}, ${customer_email}`,             // List of recipients
-            subject: `${user_firstname}'s reservation has been confirmed.`,     // Subject line
-            text: text_msg, // Plain text body
-            html: `${html_msg}` // HTML body
-          };    
-          await send_check_option(phone, text_msg);
-          //await send_Email(mailOptions_admin);  
-          const now = new Date();
-          const timeUntilAppointment = parseDateString(date) - now;
-          if (timeUntilAppointment > 0) {
-            // Email 2: (reservation date - date that making reservation) / 3
-            const email2Time = new Date(now.getTime() + timeUntilAppointment / 3);
-            schedule.scheduleJob(email2Time, async() => {
-              await send_check_option(phone, text_msg); 
-            });
-        
-            // Email 3: (reservation date - date that making reservation) * 2 / 3
-            const email3Time = new Date(now.getTime() + (timeUntilAppointment * 2) / 3);
-            schedule.scheduleJob(email3Time, async() => {
-              await send_check_option(phone, text_msg); 
-            });
-        
-            // Email 4: reservation date - 1 hour
-            const email4Time = new Date(parseDateString(date).getTime() - 60 * 60 * 1000);
-            schedule.scheduleJob(email4Time, async() => {
-              await send_check_option(phone, text_msg); 
-            });        
-          }        
-        }    
-        res.status(200).json({data: session});
-      } else {
-        res.status(201).json({ msg: 'Payment was not successful.' });
-      }   
-    }
+      res.status(202).json({data: session});
+    }   
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }  
 
-module.exports = { createCheckout ,checkoutPay };
+const processWebhook = async (req, res) => {
+  const event = req.body;
+  try{
+    switch (event.type) {
+      case 'checkout.session.completed':
+      {
+        let session = event.data.object;
+        let phone = session.metadata.phone;
+        let customer_email = session.customer_details.email;
+        await updateUserEmail(customer_email, phone);    
+        break;
+      }
+      case 'payment_intent.succeeded':
+      {
+        let paymentIntent = event.data.object;
+        let phone = paymentIntent.metadata.phone;
+        let date = paymentIntent.metadata.date;
+        let role_option = paymentIntent.metadata.role_option;
+        let scheduleName = '';
+        await updatePayStatus(phone, '1');
+        if(role_option === '1'){
+          notificationQueue.add({
+            first_reminder: 1,
+            phone: phone,
+            job_name: '111'
+          });      
+          console.log('Scheduled notification task for user 0:', phone);
+          const now = new Date();
+          const timeUntilAppointment = parseDateString(date) - now - 7200000;
+          if (timeUntilAppointment > 0) {
+            // Email 2: 
+            scheduleName = phone + '1';
+            const email2Time = new Date(now.getTime() + (timeUntilAppointment / 3));
+            schedule.scheduleJob(scheduleName, email2Time, () => {
+              notificationQueue.add({
+                first_reminder: 0,
+                phone: phone,
+                job_name: scheduleName
+              });      
+              console.log('Scheduled notification task for user 1:', phone);
+            });        
+            await insertUserReminder(scheduleName, phone, email2Time);
+            // Email 3: 
+            scheduleName = phone + '2';
+            const email3Time = new Date(now.getTime() + ((timeUntilAppointment * 2) / 3));
+            schedule.scheduleJob(scheduleName, email3Time, () => {
+              notificationQueue.add({
+                first_reminder: 0,
+                phone: phone,
+                job_name: scheduleName
+              });      
+              console.log('Scheduled notification task for user 2:', phone);
+            });      
+            await insertUserReminder(scheduleName, phone, email3Time);  
+            // Email 4: 
+            const email4Time = new Date(parseDateString(date).getTime() - (3 * 3600000));
+            if((email4Time - email3Time) > 0){
+              scheduleName = phone + '3';
+              schedule.scheduleJob(scheduleName, email4Time, () => {
+                notificationQueue.add({
+                  first_reminder: 0,
+                  phone: phone,
+                  job_name: scheduleName
+                });      
+                console.log('Scheduled notification task for user 3:', phone);
+              });      
+              await insertUserReminder(scheduleName, phone, email4Time);  
+            }
+          }
+        }
+        break;
+      }
+      case 'payment_intent.processing':
+      {
+        let paymentIntent = event.data.object;
+        let phone = paymentIntent.metadata.phone;
+        await updatePayStatus(phone, '2');
+        break;
+      }
+      case 'payment_intent.canceled':
+      {
+        let paymentIntent = event.data.object;
+        let phone = paymentIntent.metadata.phone;
+        await updatePayStatus(phone, '0');
+        break;
+      }
+      case 'payment_intent.payment_failed':
+      {
+        let paymentIntent = event.data.object;
+        let phone = paymentIntent.metadata.phone;
+        await updatePayStatus(phone, '0');
+        break;
+      }    
+        // Add additional cases for other event types as needed
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }  
+  }catch(err){
+    console.log(err);
+  }
+  res.status(200).json({ received: true });
+}
+
+module.exports = { createCheckout ,checkoutPay, processWebhook };

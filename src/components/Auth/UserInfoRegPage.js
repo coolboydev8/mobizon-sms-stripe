@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
@@ -50,12 +50,10 @@ const UserInfoRegPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
-
   const queryParams = new URLSearchParams(location.search);
   const phone = queryParams.get('phone');
   const role_option = queryParams.get('role_option');
   const date = queryParams.get('date');
-
   const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -83,6 +81,8 @@ const UserInfoRegPage = () => {
         localStorage.setItem('role_option', role_option);
         localStorage.setItem('date', date);
         navigate("/pay_stripe");
+      }else if(response.data.data === 201){
+        alert(`The customer already exists!.\n If you wish to update the appointment date or role option, please delete the customer's data in admin page and re-register.`);
       }
     } catch (err) {
       alert("Saved Failed");

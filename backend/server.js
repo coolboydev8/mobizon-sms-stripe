@@ -8,29 +8,29 @@ const authRoutes = require('./routes/authRoutes');
 const phoneRoutes = require('./routes/phoneRoutes');
 const stripeRoutes = require('./routes/stripeRoutes');
 const userRoutes = require('./routes/userRoutes');
-
 const { initializeDatabase } = require('./config/initialDB');
+const { restoreScheduledJobs } = require('./config/scheduleConfig');
 
 const app = express();
-app.use(session({ secret: process.env.JWT_SECRET, resave: false, saveUninitialized: true }));
-const PORT = process.env.PORT || 3000;
-
-app.use(cors({
-  origin: '*', // Allow requests from this origin
-  methods: ['GET', 'POST'],
-  credentials: true
-}));
-
+app.use(cors());
 app.use(express.json());
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 //manage routes
-app.use('/', phoneRoutes);
-app.use('/admin', authRoutes);
-app.use('/stripe', stripeRoutes);
-app.use('/user', userRoutes);
+app.use('/api', phoneRoutes);
+app.use('/api/admin', authRoutes);
+app.use('/api/stripe', stripeRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/test', (req, res) => {
+  res.status(200).json({data: 'ok'});
+});
+
+app.use(express.static(path.join(__dirname, '../public/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/build', 'index.html'));
+});
 
 initializeDatabase();
-app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
+restoreScheduledJobs();
+
+app.listen(process.env.PORT, () => console.log(`Server is running on ${process.env.PORT}`));

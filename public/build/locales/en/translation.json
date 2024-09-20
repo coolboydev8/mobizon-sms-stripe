@@ -58,7 +58,7 @@
   "stripe-pay-after": " was successful!",
   "stripe-retry": "Payment was not successful. Please try again.",  
   "game": "Play Game",
-  "admin-header": "Set Up Admin Informationt",
+  "admin-header": "Set Up Admin Information",
   "admin-set": "Set",
   "stripe-loading": "Loading...",
   "stripe-wait": "Please wait while we verify your payment."

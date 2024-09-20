@@ -1,0 +1,11 @@
+○ snap.certbot.renew.service - Service for snap application certbot.renew
+     Loaded: loaded (]8;;file://v220240875935283427/etc/systemd/system/snap.certbot.renew.service/etc/systemd/system/snap.certbot.renew.service]8;;; static[0;1;32m[0m)
+     Active: inactive (dead) since Sat 2024-09-14 17:21:02 CEST; 10h ago
+TriggeredBy: [0;1;32m●[0m snap.certbot.renew.timer
+   Main PID: 794495 (code=exited, status=0/SUCCESS)
+        CPU: 1.830s
+
+Sep 14 17:21:00 v220240875935283427 systemd[1]: Starting snap.certbot.renew.service - Service for snap application certbot.renew...
+Sep 14 17:21:02 v220240875935283427 systemd[1]: snap.certbot.renew.service: Deactivated successfully.
+Sep 14 17:21:02 v220240875935283427 systemd[1]: Finished snap.certbot.renew.service - Service for snap application certbot.renew.
+Sep 14 17:21:02 v220240875935283427 systemd[1]: snap.certbot.renew.service: Consumed 1.830s CPU time.

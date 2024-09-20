@@ -26,6 +26,12 @@ exports.initializeDatabase = async(req, res) => {
       gamestatus VARCHAR(255) NOT NULL,
       paystatus VARCHAR(20) NOT NULL
     )`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS reminder (
+      reminder_id INT AUTO_INCREMENT PRIMARY KEY,
+      job_name VARCHAR(255) NOT NULL,
+      phone VARCHAR(20) NOT NULL,
+      reserve_date DATETIME NOT NULL
+    )`);
     
     const hashedPassword = await bcrypt.hash('123', 10);
     const results = await pool.query('SELECT COUNT(*) AS count FROM admin');

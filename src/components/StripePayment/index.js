@@ -46,9 +46,11 @@ const StripePage = () => {
   const { t } = useTranslation();
   const role_option = localStorage.getItem('role_option');
   const phone = localStorage.getItem('phone');
+  const date = localStorage.getItem('date');
   const payload = {
     phone,
-    role_option
+    role_option,
+    date
   }
   const handleCheckout = async () => {
     const stripe = await stripePromise;

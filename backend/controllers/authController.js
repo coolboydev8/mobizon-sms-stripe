@@ -1,10 +1,19 @@
 const bcrypt = require('bcrypt');
 const { getPasswordHash, getAdminInfo, updatePassword, updatePrice_1, updatePrice_2 } = require('../models/AuthModel');
+const { getReminderList } = require('../models/ReserveModel');
 
 exports.get_admin_info = async(req, res) => {
   try{
     const admin_info = await getAdminInfo();
     res.status(200).json({ data: admin_info });
+  }catch(err){
+    console.log(err);
+  }
+}
+exports.get_reminder_info = async(req, res) => {
+  try{
+    const reminder_data = await getReminderList(req.body.filterReminder);
+    res.status(200).json({ data: reminder_data });
   }catch(err){
     console.log(err);
   }
